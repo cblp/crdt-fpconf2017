@@ -96,6 +96,21 @@
         </section>
         <!-- TODO: примеры полурешёток и неполурешёток -->
         <!-- TODO: пример: счётчик лайков -->
+        <section>
+          <h2>Проблема: законы классов не выражаются в Haskell</h2>
+        </section>
+        <section>
+          <h2>Property-base testing</h2>
+          <pre><code data-trim class="haskell">
+            associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
+
+            commutativity  =  \x y  ->  x &lt;> y == y &lt;> x
+
+            idempotency    =  \x  ->  x &lt;> x == x
+          </code></pre>
+        </section>
+        <!-- TODO: Type-level Haskell -->
+        <!-- TODO: Liquid haskell -->
       </div>
     </div>
 
