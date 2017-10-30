@@ -1,49 +1,127 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
 
-		<!-- Theme used for syntax highlighting of code -->
-		<link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
 
-		<!-- Printing and PDF exports -->
-		<script>
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.type = 'text/css';
-			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		</script>
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
 
-		<script src="lib/js/head.min.js"></script>
-		<script src="js/reveal.js"></script>
+    <style media="screen">
+      section img.element {
+        background: transparent;
+        border: 0;
+        vertical-align: middle;
+      }
+      table.figure td {
+        width: 20%;
+        text-align: center;
+        font-size: 200%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>CRDT &lt;> Haskell</h1>
+          <p>Юрий Сыровецкий, Николай Логинов</p>
+        </section>
+        <section>
+          <h3>Распределённая система</h3>
+          <table class=figure>
+            <tr>
+              <td class=fragment data-fragment-index=1><img class="element" src="database.png" alt="DB" border=0></td>
+              <td class=fragment data-fragment-index=2>⇆</td>
+              <td><img class="element" src="database.png" alt="DB" border=0></td>
+              <td class=fragment data-fragment-index=2>⇆</td>
+              <td class=fragment data-fragment-index=1><img class="element" src="database.png" alt="DB" border=0></td>
+            </tr>
+          </table>
+          <!-- TODO: картинка про конфликт -->
+          <!-- TODO: картинка про решение конфликтов - миротворец -->
+        </section>
+        <section>
+          <h2>Данные без конфликтов</h2>
+          <h3>CRDT &mdash; Conflict-free Replicated Data Type</h3>
+          <!-- TODO: каритинка, где данные держатся за ручки -->
+        </section>
+        <section>
+          <h2>Полурешётка</h2>
+          <img class="element" src="semilattice.png" alt="semilattice" style="filter: invert(100%); box-shadow: none;">
+        </section>
+        <section>
+          <em>Определение.</em> (A, (*)) &mdash; полурешётка, если операция (*)
+          ассоциативна,
+          коммутативна,
+          идемпотентна.
+        </section>
+        <section>
+          <h3>Ассоциативность</h3>
+        </section>
+        <section>
+          <h3>Коммутативность</h3>
+        </section>
+        <section>
+          <h3>Идемпотентность</h3>
+        </section>
+        <section>
+          <h2>Полурешётка =<br><em>Convergent</em> RDT (CvRDT)</h2>
+        </section>
+        <!-- TODO: примеры полурешёток и неполурешёток -->
+        <section>
+          <h3>Полурешётка в Haskell</h3>
+          <pre><code>
+            class Semigroup a where
+                (&lt;>) :: a -> a -> a
 
-		<script>
-			// More info about config & dependencies:
-			// - https://github.com/hakimel/reveal.js#configuration
-			// - https://github.com/hakimel/reveal.js#dependencies
-			Reveal.initialize({
-				dependencies: [
-					{ src: 'plugin/markdown/marked.js' },
-					{ src: 'plugin/markdown/markdown.js' },
-					{ src: 'plugin/notes/notes.js', async: true },
-					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
-			});
-		</script>
-	</body>
+            class Semigroup a => Semilattice a
+
+            type CvRDT = Semilattice
+          </code></pre>
+        </section>
+        <!-- TODO: примеры полурешёток и неполурешёток -->
+        <!-- TODO: пример: счётчик лайков -->
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          {
+            src: 'plugin/highlight/highlight.js',
+            async: true,
+            callback: function() {
+              hljs.configure({languages: ['haskell']});
+              hljs.initHighlightingOnLoad();
+            }
+          }
+        ],
+        history: true,
+      });
+    </script>
+  </body>
 </html>
