@@ -64,7 +64,8 @@
         <section data-markdown>
           ## Данные без конфликтов
           ### CRDT — Conflict-free Replicated Data Type
-          <!-- TODO: каритинка, где данные держатся за ручки -->
+          <!-- TODO: картинка, где данные держатся за ручки -->
+          [hackage:crdt](https://hackage.haskell.org/package/crdt)
         </section>
         <section>
           <h2>Полурешётка</h2>
@@ -91,7 +92,37 @@
           ## Полурешётка =
           ## _Convergent_ RDT (CvRDT)
         </section>
-        <!-- TODO: примеры полурешёток и неполурешёток -->
+        <section>
+          <h2>(множества, $\cup$) — полурешётка</h2>
+
+          $$
+          (X \cup Y) \cup Z = X \cup (Y \cup Z) \\
+          X \cup Y = Y \cup X \\
+          X \cup X = X
+          $$
+        </section>
+        <section>
+          <h2>$(ℝ, \max)$ — полурешётка</h2>
+
+          $$
+          \max (\max (x, y), z) = \max (x, \max (y, z)) \\
+          \max (x, y) = \max (y, x) \\
+          \max (x, x) = x
+          $$
+        </section>
+        <section>
+          <h2>$(ℝ, (+))$ — полугруппа</h2>
+
+          $$
+          (x + y) + z = x + (y + z)
+          $$
+
+          <h2>но не полурешётка</h2>
+
+          $$
+          x + x \ne x
+          $$
+        </section>
         <section data-markdown>
           ## Полурешётка в Haskell
 
@@ -102,8 +133,51 @@
 
               type CvRDT = Semilattice
         </section>
-        <!-- TODO: примеры полурешёток и неполурешёток -->
+        <section data-markdown>
+          ## `Set` — полурешётка
+
+              import Data.Set (Set, union)
+
+              instance Ord a => Semigroup (Set a) where
+                  (&lt;>) = union
+
+              instance Ord a => Semilattice (Set a)
+
+              -- instance Ord a => CvRDT (Set a) -- автоматически
+        </section>
+        <section data-markdown>
+          ## `Max` — полурешётка
+
+              newtype Max a = Max a
+
+              instance Ord a => Semigroup (Max a) where
+                  Max x &lt;> Max y = Max (max x y)
+
+              instance Ord a => Semilattice (Max a)
+
+              -- instance Ord a => CvRDT (Max a) -- автоматически
+        </section>
+        <section data-markdown>
+          ## `LWW` — полурешётка
+
+          (Last Write Wins)
+
+              data LWW a = LWW
+                  { value     :: !a
+                  , timestamp :: !Timestamp }
+
+              instance Ord (LWW a) where
+                  LWW _ t1 &lt;= LWW _ t2 = t1 &lt;= t2
+
+              instance Semigroup (LWW a) where
+                  (&lt;>) = max
+
+              instance Semilattice (LWW a)
+
+              -- instance CvRDT (LWW a) -- автоматически
+        </section>
         <!-- TODO: пример: счётчик лайков -->
+        <!-- TODO: CmRDT -->
         <section data-markdown>
           ## Проблема: законы классов не выражаются в Haskell
         </section>
@@ -133,9 +207,6 @@
       });
       Reveal.initialize({
         dependencies: [
-          { src: 'plugin/markdown/marked.js' },
-          { src: 'plugin/markdown/markdown.js' },
-          { src: 'plugin/notes/notes.js', async: true },
           {
             src: 'plugin/highlight/highlight.js',
             async: true,
@@ -143,7 +214,11 @@
               hljs.configure({languages: ['haskell']});
               hljs.initHighlightingOnLoad();
             }
-          }
+          },
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/math/math.js' },
+          { src: 'plugin/notes/notes.js', async: true },
         ],
         history: true,
       });
