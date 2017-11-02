@@ -29,6 +29,9 @@
         border: 0;
         vertical-align: middle;
       }
+      table.td-center td {
+        text-align: center;
+      }
       table.figure td {
         width: 20%;
         text-align: center;
@@ -208,7 +211,53 @@
 
               -- instance CvRDT (LWW a) -- автоматически
         </section>
-        <!-- TODO: пример: счётчик лайков -->
+        <section>
+          <h2>Пример из реальности — счётчик лайков</h2>
+
+          <table class="td-center">
+            <tr>
+              <td>
+                <code>
+                  <span class=f3>[</span><span class=f1>(0,&nbsp;</span><span class=f0>37175</span><span class=f1>)</span><span class=f3>, &nbsp;(1,&nbsp;18267), &nbsp;(2,&nbsp;52733)]<br>&uarr;</span>
+                </code>
+              </td>
+              <td>
+                <code>
+                  <span class=f3>[(0,&nbsp;37175),</span>
+                  <span class=f1>&nbsp;(1,&nbsp;</span><span class=f0>18267</span><span class=f1>)</span><span class=f3>, &nbsp;(2,&nbsp;52733)]<br>&uarr;</span>
+                </code>
+              </td>
+              <td>
+                <code>
+                  <span class=f3>[(0,&nbsp;37175), &nbsp;(1,&nbsp;18267),</span>
+                  <span class=f1>&nbsp;(2,&nbsp;</span><span class=f0>52733</span><span class=f1>)</span><span class=f3>]<br>&uarr;</span>
+                </code>
+              </td>
+            </tr>
+          </table>
+
+          <p class=f2>
+            &darr;<br>
+            <code>[(0, 37175), (1, 18267), (2, 52733)]</code>
+          </p>
+        </section>
+        <section>
+          <h2>Grow-only counter</h2>
+
+          <pre><code>
+            newtype GCounter = GCounter (IntMap Natural)
+
+            increment :: Int -> GCounter -> GCounter
+            increment replicaId (GCounter m) =
+                GCounter (IntMap.insertWith (+) replicaId 1 m)
+
+            instance Semigroup GCounter where
+                GCounter x &lt;> GCounter y =
+                    GCounter (IntMap.unionWith max x y)
+
+            instance Semilattice GCounter
+          </code></pre>
+        </section>
         <!-- TODO: CmRDT -->
         <section data-markdown>
           ## Проблема: законы классов не выражаются в Haskell
@@ -231,12 +280,24 @@
     <script src="js/reveal.js"></script>
 
     <script>
-      // More info about config & dependencies:
-      // - https://github.com/hakimel/reveal.js#configuration
-      // - https://github.com/hakimel/reveal.js#dependencies
       document.querySelectorAll('[data-fragment-index]').forEach(e => {
         e.className += ' fragment';
       });
+
+      document.querySelectorAll('code').forEach(e => {e.dataset.trim = '';});
+
+      fragmentColors = ['#f55', '#ff5', '#5f5', '#5ff', '#55f', '#f5f'];
+      for (var i = 0; i < 10; ++i) {
+        document.querySelectorAll('[class=f' + i + ']').forEach(f => {
+          f.className += ' fragment';
+          f.dataset.fragmentIndex = i;
+          f.style.color = fragmentColors[i];
+        });
+      }
+
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
       Reveal.initialize({
         dependencies: [
           {
@@ -253,6 +314,7 @@
           { src: 'plugin/notes/notes.js', async: true },
         ],
         history: true,
+        slideNumber: true,
       });
     </script>
   </body>
