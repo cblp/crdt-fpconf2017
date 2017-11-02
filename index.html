@@ -37,9 +37,9 @@
   <body>
     <div class="reveal">
       <div class="slides">
-        <section>
-          <h1>CRDT &lt;> Haskell</h1>
-          <p>Юрий Сыровецкий, Николай Логинов</p>
+        <section data-markdown>
+          # CRDT &lt;> Haskell
+          Юрий Сыровецкий, Николай Логинов
         </section>
         <section>
           <h3>Распределённая система</h3>
@@ -61,9 +61,9 @@
           <!-- TODO: картинка про конфликт -->
           <!-- TODO: картинка про решение конфликтов - миротворец -->
         </section>
-        <section>
-          <h2>Данные без конфликтов</h2>
-          <h3>CRDT &mdash; Conflict-free Replicated Data Type</h3>
+        <section data-markdown>
+          ## Данные без конфликтов
+          ### CRDT — Conflict-free Replicated Data Type
           <!-- TODO: каритинка, где данные держатся за ручки -->
         </section>
         <section>
@@ -74,48 +74,47 @@
             src="semilattice.png"
             style="filter: invert(100%); box-shadow: none;">
         </section>
-        <section>
-          <em>Определение.</em> (A, (*)) &mdash; полурешётка, если операция (*)
+        <section data-markdown>
+          _Определение._ (A, (\*)) — полурешётка, если операция (\*)
           ассоциативна, коммутативна, идемпотентна.
         </section>
-        <section>
-          <h3>Ассоциативность</h3>
+        <section data-markdown>
+          ## Ассоциативность
         </section>
-        <section>
-          <h3>Коммутативность</h3>
+        <section data-markdown>
+          ## Коммутативность
         </section>
-        <section>
-          <h3>Идемпотентность</h3>
+        <section data-markdown>
+          ## Идемпотентность
         </section>
-        <section>
-          <h2>Полурешётка =<br><em>Convergent</em> RDT (CvRDT)</h2>
+        <section data-markdown>
+          ## Полурешётка =
+          ## _Convergent_ RDT (CvRDT)
         </section>
         <!-- TODO: примеры полурешёток и неполурешёток -->
-        <section>
-          <h3>Полурешётка в Haskell</h3>
-          <pre><code>
-            class Semigroup a where
-                (&lt;>) :: a -> a -> a
+        <section data-markdown>
+          ## Полурешётка в Haskell
 
-            class Semigroup a => Semilattice a
+              class Semigroup a where
+                  (&lt;>) :: a -> a -> a
 
-            type CvRDT = Semilattice
-          </code></pre>
+              class Semigroup a => Semilattice a
+
+              type CvRDT = Semilattice
         </section>
         <!-- TODO: примеры полурешёток и неполурешёток -->
         <!-- TODO: пример: счётчик лайков -->
-        <section>
-          <h2>Проблема: законы классов не выражаются в Haskell</h2>
+        <section data-markdown>
+          ## Проблема: законы классов не выражаются в Haskell
         </section>
-        <section>
-          <h2>Property-base testing</h2>
-          <pre><code data-trim>
-            associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
+        <section data-markdown>
+          ## Property-base testing
 
-            commutativity  =  \x y  ->  x &lt;> y == y &lt;> x
+              associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
 
-            idempotency    =  \x  ->  x &lt;> x == x
-          </code></pre>
+              commutativity  =  \x y  ->  x &lt;> y == y &lt;> x
+
+              idempotency    =  \x  ->  x &lt;> x == x
         </section>
         <!-- TODO: Type-level Haskell -->
         <!-- TODO: Liquid haskell -->
@@ -129,9 +128,6 @@
       // More info about config & dependencies:
       // - https://github.com/hakimel/reveal.js#configuration
       // - https://github.com/hakimel/reveal.js#dependencies
-      document.querySelectorAll('code').forEach(code => {
-        code.dataset.trim = '';
-      });
       document.querySelectorAll('[data-fragment-index]').forEach(e => {
         e.className += ' fragment';
       });
