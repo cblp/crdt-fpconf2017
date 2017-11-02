@@ -207,24 +207,42 @@
               -- instance Ord a => CvRDT (Max a) -- автоматически
         </section>
 
-        <section data-markdown>
-          ## `LWW` — полурешётка
+        <section>
+          <h2><code>LWW</code> (Last Write Wins)</h2>
 
-          (Last Write Wins)
+          <pre><code>
+            data LWW a = LWW
+                { value     :: a
+                , timestamp :: Timestamp
+                }
 
-              data LWW a = LWW
-                  { value     :: !a
-                  , timestamp :: !Timestamp }
+            assign :: Clock f => a -> LWW a -> f (LWW a)
+            assign value _ = LWW value &lt;$> newTimestamp
 
-              instance Ord (LWW a) where
-                  LWW _ t1 &lt;= LWW _ t2 = t1 &lt;= t2
+            query :: LWW a -> a
+            query = value
+          </code></pre>
+        </section>
 
-              instance Semigroup (LWW a) where
-                  (&lt;>) = max
+        <section>
+          <h2><code>LWW</code> (Last Write Wins)</h2>
 
-              instance Semilattice (LWW a)
+          <pre><code>
+            data LWW a = LWW
+                { value     :: a
+                , timestamp :: Timestamp
+                }
 
-              -- instance CvRDT (LWW a) -- автоматически
+            instance Ord (LWW a) where
+                LWW _ t1 &lt;= LWW _ t2 = t1 &lt;= t2
+
+            instance Semigroup (LWW a) where
+                (&lt;>) = max
+
+            instance Semilattice (LWW a)
+
+            -- instance CvRDT (LWW a) -- автоматически
+          </code></pre>
         </section>
 
         <section>
@@ -276,11 +294,73 @@
           </code></pre>
         </section>
 
-        <!-- TODO: CmRDT -->
+        <section data-markdown>
+          ## Проблема CvRDT — размер пересылаемых данных
+        </section>
+
+        <section>
+          <h2><em>Commutative</em> RDT (CmRDT)</h2>
+          <img
+            alt="CmRDT"
+            class=element
+            src="CmRDT-overview.svg"
+            style="filter: invert(100%); box-shadow: none;">
+        </section>
+
+        <section>
+          <pre><code>
+            class CmRDT u where
+                type Op u
+                type Payload u
+                type View u
+
+                updateAtSourcePre :: Op u -> Payload u -> Bool
+
+                updateAtSource :: Clock m => Op u -> m u
+
+                updateDownstream :: u -> Payload u -> Payload u
+
+                view :: Payload u -> View u
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code>
+            data LWW a = LWW { value     :: a
+                             , timestamp :: Timestamp }
+
+            instance Eq a => CmRDT (LWW a) where
+                type Op      (LWW a) = a
+                type Payload (LWW a) = LWW a
+                type View    (LWW a) = a
+
+                updateAtSource value =
+                    LWW value &lt;$> newTimestamp
+
+                updateDownstream = (&lt;>)
+
+                view = value
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code>
+            data Counter = Increment | Decrement
+
+            instance CmRDT Counter where
+                type Op      Counter = Counter
+                type Payload Counter = Integer
+                type View    Counter = Integer
+
+                updateDownstream Increment = succ
+                updateDownstream Decrement = pred
+          </code></pre>
+        </section>
+
         <section data-markdown>
           ## Проблема: законы классов не выражаются в Haskell
         </section>
-        
+
         <section data-markdown>
           ## Property-base testing
 

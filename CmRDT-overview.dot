@@ -1,0 +1,33 @@
+digraph {
+    bgcolor=transparent;
+    fontname="sans";
+
+    edge [color=blue, fontcolor=blue, fontname="sans"];
+    node [fontname="sans"];
+
+    User;
+
+    subgraph cluster1 {
+        fontcolor=gray;
+        color=gray;
+        label="replica 1";
+
+        Update [shape=box];
+        Payload1 [label="Payload", shape=box];
+
+        Update -> Payload1 [label="apply"];
+    }
+
+    subgraph cluster2 {
+        fontcolor=gray;
+        color=gray;
+        label="replica 2";
+
+        Payload2 [label="Payload", shape=box];
+
+        Update -> Payload2 [label="transmit and apply"];
+    }
+
+    User -> Update [label="Operation", minlen=0];
+    User -> Payload1 [label="Query", dir=back];
+}
