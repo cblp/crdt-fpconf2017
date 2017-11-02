@@ -2,7 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <title>CRDT &lt;> Haskell</title>
 
@@ -32,6 +34,8 @@
         text-align: center;
         font-size: 200%;
       }
+      .term {color: #99f;}
+      .term-def {color: #9f9;}
     </style>
   </head>
   <body>
@@ -75,18 +79,40 @@
             src="semilattice.png"
             style="filter: invert(100%); box-shadow: none;">
         </section>
-        <section data-markdown>
-          _Определение._ (A, (\*)) — полурешётка, если операция (\*)
-          ассоциативна, коммутативна, идемпотентна.
+        <section>
+          <p>
+            <strong>Определение 1.</strong>
+            Множество $A$ с операцией $(⋄)$ —
+            <em class="term-def">полугруппа</em>,
+            если эта операция <em class="term">ассоциативна</em>.
+          </p>
+          <p>
+            <strong>Определение 2.</strong>
+            Полугруппа $(A, (⋄))$ — <em class="term-def">полурешётка</em>,
+            если эта эта операция <em class="term">коммутативна</em>
+            и <em class="term">идемпотентна</em>.
+          </p>
         </section>
         <section data-markdown>
           ## Ассоциативность
+
+          $$
+          (x ⋄ y) ⋄ z = x ⋄ (y ⋄ z)
+          $$
         </section>
         <section data-markdown>
           ## Коммутативность
+
+          $$
+          x ⋄ y = y ⋄ x
+          $$
         </section>
         <section data-markdown>
           ## Идемпотентность
+
+          $$
+          x ⋄ x = x
+          $$
         </section>
         <section data-markdown>
           ## Полурешётка =
