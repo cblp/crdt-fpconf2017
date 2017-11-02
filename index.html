@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>reveal.js</title>
+    <title>CRDT &lt;> Haskell</title>
 
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/theme/black.css">
@@ -45,11 +45,17 @@
           <h3>Распределённая система</h3>
           <table class=figure>
             <tr>
-              <td class=fragment data-fragment-index=1><img class="element" src="database.png" alt="DB" border=0></td>
-              <td class=fragment data-fragment-index=2>⇆</td>
-              <td><img class="element" src="database.png" alt="DB" border=0></td>
-              <td class=fragment data-fragment-index=2>⇆</td>
-              <td class=fragment data-fragment-index=1><img class="element" src="database.png" alt="DB" border=0></td>
+              <td data-fragment-index=1>
+                <img class="element" src="database.png" alt="DB" border=0>
+              </td>
+              <td data-fragment-index=2>⇆</td>
+              <td>
+                <img class="element" src="database.png" alt="DB" border=0>
+              </td>
+              <td data-fragment-index=2>⇆</td>
+              <td data-fragment-index=1>
+                <img class="element" src="database.png" alt="DB" border=0>
+              </td>
             </tr>
           </table>
           <!-- TODO: картинка про конфликт -->
@@ -62,13 +68,15 @@
         </section>
         <section>
           <h2>Полурешётка</h2>
-          <img class="element" src="semilattice.png" alt="semilattice" style="filter: invert(100%); box-shadow: none;">
+          <img
+            alt="semilattice"
+            class="element"
+            src="semilattice.png"
+            style="filter: invert(100%); box-shadow: none;">
         </section>
         <section>
           <em>Определение.</em> (A, (*)) &mdash; полурешётка, если операция (*)
-          ассоциативна,
-          коммутативна,
-          идемпотентна.
+          ассоциативна, коммутативна, идемпотентна.
         </section>
         <section>
           <h3>Ассоциативность</h3>
@@ -101,7 +109,7 @@
         </section>
         <section>
           <h2>Property-base testing</h2>
-          <pre><code data-trim class="haskell">
+          <pre><code data-trim>
             associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
 
             commutativity  =  \x y  ->  x &lt;> y == y &lt;> x
@@ -121,6 +129,12 @@
       // More info about config & dependencies:
       // - https://github.com/hakimel/reveal.js#configuration
       // - https://github.com/hakimel/reveal.js#dependencies
+      document.querySelectorAll('code').forEach(code => {
+        code.dataset.trim = '';
+      });
+      document.querySelectorAll('[data-fragment-index]').forEach(e => {
+        e.className += ' fragment';
+      });
       Reveal.initialize({
         dependencies: [
           { src: 'plugin/markdown/marked.js' },
