@@ -48,6 +48,7 @@
           # CRDT &lt;> Haskell
           Юрий Сыровецкий, Николай Логинов
         </section>
+
         <section>
           <h3>Распределённая система</h3>
           <table class=figure>
@@ -68,12 +69,14 @@
           <!-- TODO: картинка про конфликт -->
           <!-- TODO: картинка про решение конфликтов - миротворец -->
         </section>
+
         <section data-markdown>
           ## Данные без конфликтов
           ### CRDT — Conflict-free Replicated Data Type
           <!-- TODO: картинка, где данные держатся за ручки -->
           [hackage:crdt](https://hackage.haskell.org/package/crdt)
         </section>
+
         <section>
           <h2>Полурешётка</h2>
           <img
@@ -82,6 +85,7 @@
             src="semilattice.png"
             style="filter: invert(100%); box-shadow: none;">
         </section>
+
         <section>
           <p>
             <strong>Определение 1.</strong>
@@ -96,6 +100,7 @@
             и <em class="term">идемпотентна</em>.
           </p>
         </section>
+
         <section data-markdown>
           ## Идемпотентность
 
@@ -105,6 +110,7 @@
 
           Синхронизация не портит данные
         </section>
+
         <section data-markdown>
           ## Коммутативность
 
@@ -114,6 +120,7 @@
 
           Можно синхронизировать в любом направлении
         </section>
+
         <section data-markdown>
           ## Ассоциативность
 
@@ -123,10 +130,12 @@
 
           Можно синхронизировать в любом порядке
         </section>
+
         <section data-markdown>
           ## Полурешётка =
           ## _Convergent_ RDT (CvRDT)
         </section>
+
         <section>
           <h2>(множества, $\cup$) — полурешётка</h2>
 
@@ -136,6 +145,7 @@
           X \cup X = X
           $$
         </section>
+
         <section>
           <h2>$(ℝ, \max)$ — полурешётка</h2>
 
@@ -145,6 +155,7 @@
           \max (x, x) = x
           $$
         </section>
+
         <section>
           <h2>$(ℝ, (+))$ — полугруппа</h2>
 
@@ -158,6 +169,7 @@
           x + x \ne x
           $$
         </section>
+
         <section data-markdown>
           ## Полурешётка в Haskell
 
@@ -168,6 +180,7 @@
 
               type CvRDT = Semilattice
         </section>
+
         <section data-markdown>
           ## `Set` — полурешётка
 
@@ -180,6 +193,7 @@
 
               -- instance Ord a => CvRDT (Set a) -- автоматически
         </section>
+
         <section data-markdown>
           ## `Max` — полурешётка
 
@@ -192,6 +206,7 @@
 
               -- instance Ord a => CvRDT (Max a) -- автоматически
         </section>
+
         <section data-markdown>
           ## `LWW` — полурешётка
 
@@ -211,6 +226,7 @@
 
               -- instance CvRDT (LWW a) -- автоматически
         </section>
+
         <section>
           <h2>Пример из реальности — счётчик лайков</h2>
 
@@ -241,6 +257,7 @@
             <code>[(0, 37175), (1, 18267), (2, 52733)]</code>
           </p>
         </section>
+
         <section>
           <h2>Grow-only counter</h2>
 
@@ -258,10 +275,12 @@
             instance Semilattice GCounter
           </code></pre>
         </section>
+
         <!-- TODO: CmRDT -->
         <section data-markdown>
           ## Проблема: законы классов не выражаются в Haskell
         </section>
+        
         <section data-markdown>
           ## Property-base testing
 
@@ -271,6 +290,7 @@
 
               idempotency    =  \x  ->  x &lt;> x == x
         </section>
+
         <!-- TODO: Type-level Haskell -->
         <!-- TODO: Liquid haskell -->
       </div>
