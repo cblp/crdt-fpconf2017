@@ -5,6 +5,17 @@ digraph {
     edge [color=blue, fontcolor=blue, fontname="sans"];
     node [fontname="sans"];
 
+    subgraph cluster0 {
+        fontcolor=gray;
+        color=gray;
+        label="replica 0";
+
+        strut0 [style=invisible];
+        Payload0 [label="Payload", shape=box];
+
+        strut0 -> Payload0 [style=invisible, dir=none];
+    }
+
     User;
 
     subgraph cluster1 {
@@ -12,22 +23,26 @@ digraph {
         color=gray;
         label="replica 1";
 
-        Update [shape=box];
+        Op [shape=box];
         Payload1 [label="Payload", shape=box];
 
-        Update -> Payload1 [label="apply"];
+        Op -> Payload1;
     }
+
+    Op -> Payload0;
 
     subgraph cluster2 {
         fontcolor=gray;
         color=gray;
         label="replica 2";
 
+        strut2 [style=invisible];
         Payload2 [label="Payload", shape=box];
 
-        Update -> Payload2 [label="transmit and apply"];
+        strut2 -> Payload2 [style=invisible, dir=none];
+        Op -> Payload2;
     }
 
-    User -> Update [label="Operation", minlen=0];
-    User -> Payload1 [label="Query", dir=back];
+    User -> Op [label="Intent", minlen=1];
+    User -> Payload1 [dir=back, color=green];
 }

@@ -216,8 +216,8 @@
                 , timestamp :: Timestamp
                 }
 
-            assign :: Clock f => a -> LWW a -> f (LWW a)
-            assign value _ = LWW value &lt;$> newTimestamp
+            assign :: a -> LWW a -> Timestamp -> LWW a
+            assign value _ = LWW value
 
             query :: LWW a -> a
             query = value
@@ -230,11 +230,11 @@
           <pre><code>
             data LWW a = LWW
                 { value     :: a
-                , timestamp :: Timestamp
-                }
+                , timestamp :: Timestamp }
 
             instance Ord (LWW a) where
-                LWW _ t1 &lt;= LWW _ t2 = t1 &lt;= t2
+                LWW{timestamp = t1} &lt;= LWW{timestamp = t2} =
+                    t1 &lt;= t2
 
             instance Semigroup (LWW a) where
                 (&lt;>) = max
@@ -309,37 +309,32 @@
 
         <section>
           <pre><code>
-            class CmRDT u where
-                type Op u
-                type Payload u
-                type View u
+            class CmRDT op where
+                type Intent op
+                type Payload op
 
-                updateAtSourcePre :: Op u -> Payload u -> Bool
+                precondition :: Intent op -> Payload op -> Bool
 
-                updateAtSource :: Clock m => Op u -> m u
+                makeOp :: Intent op -> Timestamp -> op
 
-                updateDownstream :: u -> Payload u -> Payload u
-
-                view :: Payload u -> View u
+                apply :: op -> Payload op -> Payload op
           </code></pre>
         </section>
 
         <section>
           <pre><code>
-            data LWW a = LWW { value     :: a
-                             , timestamp :: Timestamp }
+            data LWW a = LWW
+                { value     :: a
+                , timestamp :: Timestamp
+                }
 
             instance Eq a => CmRDT (LWW a) where
-                type Op      (LWW a) = a
+                type Intent  (LWW a) = a
                 type Payload (LWW a) = LWW a
-                type View    (LWW a) = a
 
-                updateAtSource value =
-                    LWW value &lt;$> newTimestamp
+                makeOp = LWW
 
-                updateDownstream = (&lt;>)
-
-                view = value
+                apply = (&lt;>)
           </code></pre>
         </section>
 
@@ -348,12 +343,11 @@
             data Counter = Increment | Decrement
 
             instance CmRDT Counter where
-                type Op      Counter = Counter
+                type Intent  Counter = Counter
                 type Payload Counter = Integer
-                type View    Counter = Integer
 
-                updateDownstream Increment = succ
-                updateDownstream Decrement = pred
+                apply Increment = succ
+                apply Decrement = pred
           </code></pre>
         </section>
 
