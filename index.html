@@ -213,23 +213,6 @@
           <pre><code>
             data LWW a = LWW
                 { value     :: a
-                , timestamp :: Timestamp
-                }
-
-            assign :: a -> LWW a -> Timestamp -> LWW a
-            assign value _ = LWW value
-
-            query :: LWW a -> a
-            query = value
-          </code></pre>
-        </section>
-
-        <section>
-          <h2><code>LWW</code> (Last Write Wins)</h2>
-
-          <pre><code>
-            data LWW a = LWW
-                { value     :: a
                 , timestamp :: Timestamp }
 
             instance Ord (LWW a) where
