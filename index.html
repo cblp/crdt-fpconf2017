@@ -344,6 +344,24 @@
           </code></pre>
         </section>
 
+        <section>
+          <pre><code>
+            data TwoPSet a = Add a | Remove a
+
+            instance Eq a => CausalOrd (TwoPSet a) where
+                Remove a  `affects`  Add b  =  a == b
+                _         `affects`  _      =  False
+
+            instance Ord a => CmRDT (TwoPSet a) where
+                type Intent  (TwoPSet a) = TwoPSet a
+                type Payload (TwoPSet a) = Set a
+                precondition (Add    _) _  ->  True
+                precondition (Remove a) s  ->  Set.member a s
+                apply (Add    a) s  =  Set.insert a s
+                apply (Remove a) s  =  Set.delete a s
+          </code></pre>
+        </section>
+
         <section data-markdown>
           ## Проблема: законы классов не выражаются в Haskell
         </section>
