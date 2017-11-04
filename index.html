@@ -137,7 +137,7 @@
         </section>
 
         <section>
-          <h2>(множества, $\cup$) — полурешётка</h2>
+          <h2>(множества, $(\cup)$) — полурешётка</h2>
 
           $$
           (X \cup Y) \cup Z = X \cup (Y \cup Z) \\
@@ -184,10 +184,8 @@
         <section data-markdown>
           ## `Set` — полурешётка
 
-              import Data.Set (Set, union)
-
               instance Ord a => Semigroup (Set a) where
-                  (&lt;>) = union
+                  (&lt;>) = Set.union
 
               instance Ord a => Semilattice (Set a)
 
@@ -269,15 +267,14 @@
           <h2>Grow-only counter</h2>
 
           <pre><code>
-            newtype GCounter = GCounter (IntMap Natural)
+            newtype GCounter = G (IntMap Natural)
 
             increment :: Int -> GCounter -> GCounter
-            increment replicaId (GCounter m) =
-                GCounter (IntMap.insertWith (+) replicaId 1 m)
+            increment replicaId (G m) =
+                G (IntMap.insertWith (+) replicaId 1 m)
 
             instance Semigroup GCounter where
-                GCounter x &lt;> GCounter y =
-                    GCounter (IntMap.unionWith max x y)
+                G x &lt;> G y = G (IntMap.unionWith max x y)
 
             instance Semilattice GCounter
           </code></pre>
