@@ -50,7 +50,7 @@
         </section>
 
         <section>
-          <h3>Распределённая система</h3>
+          <h3 data-fragment-index=1>Распределённая система</h3>
           <table class=figure>
             <tr>
               <td data-fragment-index=1>
@@ -298,15 +298,18 @@
 
         <section>
           <pre><code>
-            class CmRDT op where
+            class CausalOrd a where
+                affects :: a -> a -> Bool
+
+            class CausalOrd op => CmRDT op where
                 type Intent op
                 type Payload op
 
                 precondition :: Intent op -> Payload op -> Bool
 
-                makeOp :: Intent op -> Timestamp -> op
+                makeOp       :: Intent op -> Timestamp -> op
 
-                apply :: op -> Payload op -> Payload op
+                apply        :: op -> Payload op -> Payload op
           </code></pre>
         </section>
 
@@ -317,12 +320,13 @@
                 , timestamp :: Timestamp
                 }
 
+            instance CausalOrd (LWW a) where
+                affects _ _ = False
+
             instance Eq a => CmRDT (LWW a) where
                 type Intent  (LWW a) = a
                 type Payload (LWW a) = LWW a
-
                 makeOp = LWW
-
                 apply = (&lt;>)
           </code></pre>
         </section>
@@ -331,12 +335,15 @@
           <pre><code>
             data Counter = Increment | Decrement
 
+            instance CausalOrd (LWW a) where
+                affects _ _ = False
+
             instance CmRDT Counter where
                 type Intent  Counter = Counter
                 type Payload Counter = Integer
-
-                apply Increment = succ
-                apply Decrement = pred
+                apply op x = case op of
+                    Increment -> x + 1
+                    Decrement -> x - 1
           </code></pre>
         </section>
 
@@ -345,7 +352,7 @@
         </section>
 
         <section data-markdown>
-          ## Property-base testing
+          ## Property-based testing
 
               associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
 
