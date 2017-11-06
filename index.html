@@ -234,25 +234,23 @@
             <tr>
               <td>
                 <code>
-                  <span class=f3>[</span><span class=f1>(0,&nbsp;</span><span
-                  class=f0>37175</span><span class=f1>)</span><span class=f3>,
-                  &nbsp;(1,&nbsp;18267), &nbsp;(2,&nbsp;52733)]<br>&uarr;</span>
+                  <span class=f3>{</span><span class=f1>0:</span><span
+                  class=f0>37175</span><span class=f3>, &nbsp;1:18267,
+                  &nbsp;2:52733}<br>&uarr;</span>
                 </code>
               </td>
               <td>
                 <code>
-                  <span class=f3>[(0,&nbsp;37175),</span>
-                  <span class=f1>&nbsp;(1,&nbsp;</span><span
-                  class=f0>18267</span><span class=f1>)</span><span class=f3>,
-                  &nbsp;(2,&nbsp;52733)]<br>&uarr;</span>
+                  <span class=f3>{0:37175,</span>
+                  <span class=f1>&nbsp;1:</span><span class=f0>18267</span><span
+                  class=f3>, &nbsp;2:52733}<br>&uarr;</span>
                 </code>
               </td>
               <td>
                 <code>
-                  <span class=f3>[(0,&nbsp;37175), &nbsp;(1,&nbsp;18267),</span>
-                  <span class=f1>&nbsp;(2,&nbsp;</span><span
-                  class=f0>52733</span><span class=f1>)</span><span
-                  class=f3>]<br>&uarr;</span>
+                  <span class=f3>{0:37175, &nbsp;1:18267,</span>
+                  <span class=f1>&nbsp;2:</span><span class=f0>52733</span><span
+                  class=f3>}<br>&uarr;</span>
                 </code>
               </td>
             </tr>
@@ -260,7 +258,7 @@
 
           <p class=f2>
             &darr;<br>
-            <code>[(0, 37175), (1, 18267), (2, 52733)]</code>
+            <code>{0:37175, 1:18267, 2:52733}</code>
           </p>
         </section>
 
@@ -268,16 +266,21 @@
           <h2>Grow-only counter</h2>
 
           <pre><code>
-            newtype GCounter = G (IntMap Natural)
+            newtype GCounter = G (Map ReplicaId Natural)
 
-            increment :: Int -> GCounter -> GCounter
+            increment :: ReplicaId -> GCounter -> GCounter
             increment replicaId (G m) =
-                G (IntMap.insertWith (+) replicaId 1 m)
+                G (Map.insertWith (+) replicaId 1 m)
+
+            query :: GCounter -> Natural
+            query (G m) = sum m
 
             instance Semigroup GCounter where
-                G x &lt;> G y = G (IntMap.unionWith max x y)
+                G x &lt;> G y = G (Map.unionWith max x y)
 
             instance Semilattice GCounter
+
+            -- instance CvRDT GCounter -- автоматически
           </code></pre>
         </section>
 
@@ -290,6 +293,7 @@
           <img
             alt="CmRDT"
             class=element
+            height="500px"
             src="CmRDT-overview.svg"
             style="filter: invert(100%); box-shadow: none;">
         </section>
@@ -298,7 +302,6 @@
           <pre><code>
             class CausalOrd a where
                 affects :: a -> a -> Bool
-
 
             class CausalOrd op => CmRDT op where
                 type Intent op
@@ -362,11 +365,13 @@
 
                 type Payload (TwoPSet a) = Set a
 
-                precondition (Add    _) _  ->  True
-                precondition (Remove a) s  ->  Set.member a s
+                precondition op s = case op of
+                    Add    _  ->  True
+                    Remove a  ->  Set.member a s
 
-                apply (Add    a) s  =  Set.insert a s
-                apply (Remove a) s  =  Set.delete a s
+                apply op s = case op of
+                    Add    a  ->  Set.insert a s
+                    Remove a  ->  Set.delete a s
           </code></pre>
         </section>
 
