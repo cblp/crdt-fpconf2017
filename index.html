@@ -211,7 +211,8 @@
           <pre><code>
             data LWW a = LWW
                 { value     :: a
-                , timestamp :: Timestamp }
+                , timestamp :: Timestamp
+                }
 
             instance Ord (LWW a) where
                 LWW{timestamp = t1} &lt;= LWW{timestamp = t2} =
@@ -298,8 +299,10 @@
             class CausalOrd a where
                 affects :: a -> a -> Bool
 
+
             class CausalOrd op => CmRDT op where
                 type Intent op
+
                 type Payload op
 
                 precondition :: Intent op -> Payload op -> Bool
@@ -337,7 +340,9 @@
 
             instance CmRDT Counter where
                 type Intent  Counter = Counter
+
                 type Payload Counter = Integer
+
                 apply op x = case op of
                     Increment -> x + 1
                     Decrement -> x - 1
@@ -354,9 +359,12 @@
 
             instance Ord a => CmRDT (TwoPSet a) where
                 type Intent  (TwoPSet a) = TwoPSet a
+
                 type Payload (TwoPSet a) = Set a
+
                 precondition (Add    _) _  ->  True
                 precondition (Remove a) s  ->  Set.member a s
+
                 apply (Add    a) s  =  Set.insert a s
                 apply (Remove a) s  =  Set.delete a s
           </code></pre>
@@ -366,14 +374,24 @@
           ## Проблема: законы классов не выражаются в Haskell
         </section>
 
-        <section data-markdown>
-          ## Property-based testing
+        <section>
+          <h2>Property-based testing</h2>
 
-              associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
+          <pre><code>
+            associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
 
-              commutativity  =  \x y  ->  x &lt;> y == y &lt;> x
+            commutativity  =  \x y  ->  x &lt;> y == y &lt;> x
 
-              idempotency    =  \x  ->  x &lt;> x == x
+            idempotency    =  \x  ->  x &lt;> x == x
+          </code></pre>
+          <pre class="fragment"><code>
+            associativity:
+              +++ OK, passed 100 tests.
+            commutativity:
+              +++ OK, passed 100 tests.
+            idempotency:
+              +++ OK, passed 100 tests.
+          </code></pre>
         </section>
 
         <!-- TODO: Type-level Haskell -->
@@ -420,6 +438,7 @@
         ],
         history: true,
         slideNumber: true,
+        transition: 'none',
       });
     </script>
   </body>
