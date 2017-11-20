@@ -1,9 +1,9 @@
 digraph {
     bgcolor=transparent;
-    fontname="sans";
+    fontname="sans-serif";
 
-    edge [color=blue, fontcolor=blue, fontname="sans"];
-    node [fontname="sans"];
+    edge [color=blue, fontcolor=blue, fontname="sans-serif"];
+    node [fontname="sans-serif"];
 
     subgraph cluster0 {
         fontcolor=gray;

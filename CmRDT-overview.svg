@@ -10,15 +10,15 @@
 <title>%3</title>
 <g id="clust1" class="cluster"><title>cluster0</title>
 <polygon fill="none" stroke="gray" points="8,-8 8,-156 100,-156 100,-8 8,-8"/>
-<text text-anchor="middle" x="54" y="-140.8" font-family="sans" font-size="14.00" fill="gray">replica 0</text>
+<text text-anchor="middle" x="54" y="-140.8" font-family="sans-serif" font-size="14.00" fill="gray">replica 0</text>
 </g>
 <g id="clust2" class="cluster"><title>cluster1</title>
 <polygon fill="none" stroke="gray" points="122,-8 122,-156 210,-156 210,-8 122,-8"/>
-<text text-anchor="middle" x="166" y="-140.8" font-family="sans" font-size="14.00" fill="gray">replica 1</text>
+<text text-anchor="middle" x="166" y="-140.8" font-family="sans-serif" font-size="14.00" fill="gray">replica 1</text>
 </g>
 <g id="clust3" class="cluster"><title>cluster2</title>
 <polygon fill="none" stroke="gray" points="218,-8 218,-156 310,-156 310,-8 218,-8"/>
-<text text-anchor="middle" x="264" y="-140.8" font-family="sans" font-size="14.00" fill="gray">replica 2</text>
+<text text-anchor="middle" x="264" y="-140.8" font-family="sans-serif" font-size="14.00" fill="gray">replica 2</text>
 </g>
 <!-- strut0 -->
 <g id="node1" class="node"><title>strut0</title>
@@ -26,7 +26,7 @@
 <!-- Payload0 -->
 <g id="node2" class="node"><title>Payload0</title>
 <polygon fill="none" stroke="black" points="91,-52 19,-52 19,-16 91,-16 91,-52"/>
-<text text-anchor="middle" x="55" y="-30.3" font-family="sans" font-size="14.00">Payload</text>
+<text text-anchor="middle" x="55" y="-30.3" font-family="sans-serif" font-size="14.00">Payload</text>
 </g>
 <!-- strut0&#45;&gt;Payload0 -->
 <g id="edge1" class="edge"><title>strut0&#45;&gt;Payload0</title>
@@ -34,23 +34,23 @@
 <!-- User -->
 <g id="node3" class="node"><title>User</title>
 <ellipse fill="none" stroke="black" cx="142" cy="-215" rx="32.4942" ry="18"/>
-<text text-anchor="middle" x="142" y="-211.3" font-family="sans" font-size="14.00">User</text>
+<text text-anchor="middle" x="142" y="-211.3" font-family="sans-serif" font-size="14.00">User</text>
 </g>
 <!-- Op -->
 <g id="node4" class="node"><title>Op</title>
 <polygon fill="none" stroke="black" points="202,-125 148,-125 148,-89 202,-89 202,-125"/>
-<text text-anchor="middle" x="175" y="-103.3" font-family="sans" font-size="14.00">Op</text>
+<text text-anchor="middle" x="175" y="-103.3" font-family="sans-serif" font-size="14.00">Op</text>
 </g>
 <!-- User&#45;&gt;Op -->
 <g id="edge6" class="edge"><title>User&#45;&gt;Op</title>
 <path fill="none" stroke="blue" d="M147.302,-196.969C152.515,-180.224 160.552,-154.41 166.628,-134.892"/>
 <polygon fill="blue" stroke="blue" points="169.971,-135.929 169.602,-125.341 163.287,-133.848 169.971,-135.929"/>
-<text text-anchor="middle" x="179.5" y="-167.8" font-family="sans" font-size="14.00" fill="blue">Intent</text>
+<text text-anchor="middle" x="179.5" y="-167.8" font-family="sans-serif" font-size="14.00" fill="blue">Intent</text>
 </g>
 <!-- Payload1 -->
 <g id="node5" class="node"><title>Payload1</title>
 <polygon fill="none" stroke="black" points="202,-52 130,-52 130,-16 202,-16 202,-52"/>
-<text text-anchor="middle" x="166" y="-30.3" font-family="sans" font-size="14.00">Payload</text>
+<text text-anchor="middle" x="166" y="-30.3" font-family="sans-serif" font-size="14.00">Payload</text>
 </g>
 <!-- User&#45;&gt;Payload1 -->
 <g id="edge7" class="edge"><title>User&#45;&gt;Payload1</title>
@@ -70,7 +70,7 @@
 <!-- Payload2 -->
 <g id="node7" class="node"><title>Payload2</title>
 <polygon fill="none" stroke="black" points="298,-52 226,-52 226,-16 298,-16 298,-52"/>
-<text text-anchor="middle" x="262" y="-30.3" font-family="sans" font-size="14.00">Payload</text>
+<text text-anchor="middle" x="262" y="-30.3" font-family="sans-serif" font-size="14.00">Payload</text>
 </g>
 <!-- Op&#45;&gt;Payload2 -->
 <g id="edge5" class="edge"><title>Op&#45;&gt;Payload2</title>
