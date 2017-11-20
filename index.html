@@ -210,7 +210,7 @@
           ## `Set` — полурешётка
 
               instance Ord a => Semigroup (Set a) where
-                  (&lt;>) = Set.union
+                  (&lt;>) = union
 
               instance Ord a => Semilattice (Set a)
 
@@ -295,13 +295,13 @@
 
             increment :: ReplicaId -> GCounter -> GCounter
             increment replicaId (G m) =
-                G (Map.insertWith (+) replicaId 1 m)
+                G (insertWith (+) replicaId 1 m)
 
             query :: GCounter -> Natural
             query (G m) = sum m
 
             instance Semigroup GCounter where
-                G x &lt;> G y = G (Map.unionWith max x y)
+                G x &lt;> G y = G (unionWith max x y)
 
             instance Semilattice GCounter
 
@@ -385,8 +385,8 @@
             instance Ord a => CmRDT (TwoPSet a) where
                 type Payload (TwoPSet a) = Set a
                 apply op s = case op of
-                    Add    a  ->  Set.insert a s
-                    Remove a  ->  Set.delete a s
+                    Add    a  ->  insert a s
+                    Remove a  ->  delete a s
 
                 type Intent (TwoPSet a) = TwoPSet a
                 makeOp op s = case op of
