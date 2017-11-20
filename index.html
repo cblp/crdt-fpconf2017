@@ -329,15 +329,11 @@
                 affects :: a -> a -> Bool
 
             class CausalOrd op => CmRDT op where
-                type Intent op
-
                 type Payload op
+                apply :: op -> Payload op -> Payload op
 
-                precondition :: Intent op -> Payload op -> Bool
-
-                makeOp       :: Intent op -> Timestamp -> op
-
-                apply        :: op -> Payload op -> Payload op
+                type Intent op
+                makeOp :: Intent op -> Payload op -> Maybe (Process op)
           </code></pre>
         </section>
 
@@ -352,10 +348,11 @@
                 affects _ _ = False
 
             instance Eq a => CmRDT (LWW a) where
-                type Intent  (LWW a) = a
                 type Payload (LWW a) = LWW a
-                makeOp = LWW
                 apply = (&lt;>)
+
+                type Intent (LWW a) = a
+                makeOp value state = Just (assign value state)
           </code></pre>
         </section>
 
@@ -367,13 +364,13 @@
                 affects _ _ = False
 
             instance CmRDT Counter where
-                type Intent  Counter = Counter
-
                 type Payload Counter = Integer
-
                 apply op x = case op of
                     Increment -> x + 1
                     Decrement -> x - 1
+
+                type Intent Counter = Counter
+                makeOp i _ = Just (pure i)
           </code></pre>
         </section>
 
@@ -386,17 +383,18 @@
                 _         `affects`  _      =  False
 
             instance Ord a => CmRDT (TwoPSet a) where
-                type Intent  (TwoPSet a) = TwoPSet a
-
                 type Payload (TwoPSet a) = Set a
-
-                precondition op s = case op of
-                    Add    _  ->  True
-                    Remove a  ->  Set.member a s
-
                 apply op s = case op of
                     Add    a  ->  Set.insert a s
                     Remove a  ->  Set.delete a s
+
+                type Intent (TwoPSet a) = TwoPSet a
+                makeOp op s = case op of
+                    Add    _  ->  Just (pure op)
+                    Remove a  ->  if a `member` s then
+                                      Just (pure op)
+                                  else
+                                      Nothing
           </code></pre>
         </section>
 
@@ -429,11 +427,6 @@
             <li><a href="http://hackage.haskell.org/package/ClassLaws">hackage:ClassLaws</a></li>
             <li><a href="http://wiki.portal.chalmers.se/cse/pmwiki.php/FP/ClassLaws">wiki.portal.chalmers.se/cse/pmwiki.php/FP/ClassLaws</a> (2012)</li>
           </ul>
-        </section>
-
-        <section>
-          <pre><code>
-          </code></pre>
         </section>
 
         <!-- TODO: Type-level Haskell -->
