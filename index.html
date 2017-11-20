@@ -399,11 +399,13 @@
         </section>
 
         <section data-markdown>
-          ## Законы классов не выражаются в Haskell
+          ### Всем известно, что
+          ## законы классов не выражаются в Haskell
         </section>
 
         <section>
           <h2>Property-based testing</h2>
+          <!-- <h3>То есть законы классов выражаются в Haskell, но только в значениях</h3> -->
 
           <pre><code>
             associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
@@ -425,13 +427,17 @@
         <section>
           <ul>
             <li><a href="http://hackage.haskell.org/package/ClassLaws">hackage:ClassLaws</a></li>
-            <li><a href="http://wiki.portal.chalmers.se/cse/pmwiki.php/FP/ClassLaws">wiki.portal.chalmers.se/cse/pmwiki.php/FP/ClassLaws</a> (2012)</li>
+            <li><a href="http://wiki.portal.chalmers.se/cse/pmwiki.php/FP/ClassLaws">wiki.portal.chalmers.se/<wbr>cse/<wbr>pmwiki.php/<wbr>FP/<wbr>ClassLaws</a> (2012)</li>
           </ul>
+
+          <!-- TODO: QuickCheck laws -->
+
+          <!-- TODO: prove laws with SAT solvers -->
         </section>
 
-        <!-- TODO: Type-level Haskell -->
-
         <!-- TODO: Liquid haskell -->
+
+        <!-- TODO: Type-level Haskell -->
 
         <!-- TODO http://www.cse.chalmers.se/~jomoa/papers/typeclasslaws.pdf -->
       </div>
