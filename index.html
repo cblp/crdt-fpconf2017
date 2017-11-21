@@ -40,6 +40,7 @@
       }
       .term {color: #99f;}
       .term-def {color: #9f9;}
+      p.formula-large {font-size: 200%;}
     </style>
   </head>
   <body>
@@ -47,7 +48,7 @@
       <div class="slides">
         <section data-markdown>
           # CRDT &lt;> Haskell
-          Юрий Сыровецкий, Николай Логинов
+          ## Юрий Сыровецкий, Николай Логинов
         </section>
 
         <section>
@@ -65,7 +66,7 @@
         </section>
 
         <section>
-          <h2>Распределённая система</h2>
+          <h1>Распределённая система</h1>
           <table class=figure>
             <tr>
               <td>
@@ -103,7 +104,7 @@
         </section>
 
         <section>
-          <h2>Полурешётка</h2>
+          <h1>Полурешётка</h1>
           <img
             alt="semilattice"
             class="element"
@@ -126,73 +127,52 @@
           </p>
         </section>
 
-        <section data-markdown>
-          ## Идемпотентность
-
-          $$
-          x ⋄ x = x
-          $$
-
-          Синхронизация не портит данные
-        </section>
-
-        <section data-markdown>
-          ## Коммутативность
-
-          $$
-          x ⋄ y = y ⋄ x
-          $$
-
-          Можно синхронизировать в любом направлении
-        </section>
-
-        <section data-markdown>
-          ## Ассоциативность
-
-          $$
-          (x ⋄ y) ⋄ z = x ⋄ (y ⋄ z)
-          $$
-
-          Можно синхронизировать в любом порядке
-        </section>
-
-        <section data-markdown>
-          ## Полурешётка =
-          ## _Convergent_ RDT (CvRDT)
+        <section>
+          <h1>Идемпотентность</h1>
+          <p class="formula-large">$ x ⋄ x = x $</p>
+          <h2>Синхронизация не&nbsp;портит данные</h2>
         </section>
 
         <section>
-          <h2>(множества, $(\cup)$) — полурешётка</h2>
-
-          $$
-          (X \cup Y) \cup Z = X \cup (Y \cup Z) \\
-          X \cup Y = Y \cup X \\
-          X \cup X = X
-          $$
+          <h1>Коммутативность</h1>
+          <p class="formula-large">$ x ⋄ y = y ⋄ x $</p>
+          <h2>Можно синхронизировать в&nbsp;любом направлении</h2>
         </section>
 
         <section>
-          <h2>$(ℝ, \max)$ — полурешётка</h2>
+          <h1>Ассоциативность</h1>
+          <p class="formula-large">$ (x ⋄ y) ⋄ z = x ⋄ (y ⋄ z) $</p>
+          <h2>Можно синхронизировать в&nbsp;любом порядке</h2>
+        </section>
 
-          $$
-          \max (\max (x, y), z) = \max (x, \max (y, z)) \\
-          \max (x, y) = \max (y, x) \\
-          \max (x, x) = x
-          $$
+        <section data-markdown>
+          # Полурешётка =
+          # _Convergent_ RDT (CvRDT)
+        </section>
+
+        <section>
+          <h1>(множества, $(\cup)$)</h1>
+          <p class="formula-large">
+            $ (X \cup Y) \cup Z = X \cup (Y \cup Z) $<br>
+            $ X \cup Y = Y \cup X $<br>
+            $ X \cup X = X $
+          </p>
+        </section>
+
+        <section>
+          <h1>$(ℝ, \max)$</h1>
+          <p style="font-size: 130%;">
+            $ \max (\max (x, y), z) = \max (x, \max (y, z)) $<br>
+            $ \max (x, y) = \max (y, x) $<br>
+            $ \max (x, x) = x $
+          </p>
         </section>
 
         <section>
           <h2>$(ℝ, (+))$ — полугруппа</h2>
-
-          $$
-          (x + y) + z = x + (y + z)
-          $$
-
+          <p class="formula-large">$ (x + y) + z = x + (y + z) $</p>
           <h2>но не полурешётка</h2>
-
-          $$
-          x + x \ne x
-          $$
+          <p class="formula-large">$ x + x \ne x $</p>
         </section>
 
         <section data-markdown>
@@ -232,7 +212,6 @@
 
         <section>
           <h2><code>LWW</code> (Last Write Wins)</h2>
-
           <pre><code>
             data LWW a = LWW
                 { value     :: a
@@ -309,8 +288,8 @@
           </code></pre>
         </section>
 
-        <section data-markdown>
-          ## Проблема CvRDT — размер пересылаемых данных
+        <section>
+          <h1>Проблема CvRDT&nbsp;— размер пересылаемых данных</h1>
         </section>
 
         <section>
@@ -324,6 +303,7 @@
         </section>
 
         <section>
+          <h2>CmRDT в Haskell</h2>
           <pre><code>
             class CausalOrd a where
                 affects :: a -> a -> Bool
@@ -338,6 +318,7 @@
         </section>
 
         <section>
+          <h2><code>LWW</code> (Last Write Wins)</h2>
           <pre><code>
             data LWW a = LWW
                 { value     :: a
@@ -357,6 +338,7 @@
         </section>
 
         <section>
+          <h2>Counter</h2>
           <pre><code>
             data Counter = Increment | Decrement
 
@@ -375,6 +357,7 @@
         </section>
 
         <section>
+          <h2>2P-Set (2-phase set)</h2>
           <pre><code>
             data TwoPSet a = Add a | Remove a
 
@@ -399,12 +382,16 @@
         </section>
 
         <section data-markdown>
-          ### Всем известно, что
-          ## законы классов не выражаются в Haskell
+          # Как убедить себя, что код правильный?
+        </section>
+
+        <section data-markdown>
+          ## Всем известно, что законы классов
+          # не выражаются в Haskell
         </section>
 
         <section>
-          <h2>Property-based testing</h2>
+          <h1>Property-based testing</h1>
           <!-- <h3>То есть законы классов выражаются в Haskell, но только в значениях</h3> -->
 
           <pre><code>
@@ -414,7 +401,7 @@
 
             idempotency    =  \x  ->  x &lt;> x == x
           </code></pre>
-          <pre class="fragment"><code>
+          <pre><code>
             associativity:
               +++ OK, passed 100 tests.
             commutativity:
@@ -438,7 +425,7 @@
         <!-- TODO: Liquid haskell -->
 
         <section>
-          <h2>Type-level</h2>
+          <h1>Type-level</h1>
           <p>
             Justin Le,
             <a href="https://blog.jle.im/entry/verified-instances-in-haskell.html">blog.jle.im/<wbr>entry/<wbr>verified-instances-in-haskell</a>
@@ -464,6 +451,7 @@
         </section>
 
         <section>
+          <h2>Полугруппа с доказательством</h2>
           <pre><code>
             class Semigroup a where
                 type (x :: a) &lt;> (y :: a) :: a
@@ -484,6 +472,7 @@
         </section>
 
         <section>
+          <h2>Список с доказательством</h2>
           <pre><code>
             instance Semigroup [a] where
                 type xs &lt;> ys = xs :++ ys
@@ -498,6 +487,7 @@
         </section>
 
         <section>
+          <h2><code>Max</code> с доказательством</h2>
           <pre><code>
             instance SOrd a => Semigroup (Max a) where
                 type 'Max x &lt;> 'Max y = 'Max (Singletons.Max x y)
@@ -507,6 +497,7 @@
         </section>
 
         <section>
+          <h2>В действии</h2>
           <pre><code class="haskell">
             print ([1, 2] &lt;> [3] :: [Integer])
           </code></pre>
@@ -520,6 +511,10 @@
         </section>
 
         <!-- TODO http://www.cse.chalmers.se/~jomoa/papers/typeclasslaws.pdf -->
+
+        <!-- TODO: https://github.com/LeventErkok/sbvPlugin -->
+
+        <!-- TODO: выводы -->
       </div>
     </div>
 
