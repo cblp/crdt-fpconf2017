@@ -46,7 +46,7 @@
     <div class="reveal">
       <div class="slides">
         <section data-markdown>
-          # CRDT $⋄$ Haskell
+          # CRDT &lt;> Haskell
           Юрий Сыровецкий, Николай Логинов
         </section>
 
@@ -437,7 +437,87 @@
 
         <!-- TODO: Liquid haskell -->
 
-        <!-- TODO: Type-level Haskell -->
+        <section>
+          <h2>Type-level</h2>
+          <p>
+            Justin Le,
+            <a href="https://blog.jle.im/entry/verified-instances-in-haskell.html">blog.jle.im/<wbr>entry/<wbr>verified-instances-in-haskell</a>
+          </p>
+        </section>
+
+        <section>
+          <h2>Ah, type-level Haskell...</h2>
+          <pre><code>
+            {-# LANGUAGE DataKinds #-}
+            {-# LANGUAGE FlexibleInstances #-}
+            {-# LANGUAGE GADTs #-}
+            {-# LANGUAGE OverloadedStrings #-}
+            {-# LANGUAGE PolyKinds #-}
+            {-# LANGUAGE QuasiQuotes #-}
+            {-# LANGUAGE RankNTypes #-}
+            {-# LANGUAGE ScopedTypeVariables #-}
+            {-# LANGUAGE TemplateHaskell #-}
+            {-# LANGUAGE TypeFamilies #-}
+            {-# LANGUAGE TypeOperators #-}
+            {-# LANGUAGE UndecidableInstances #-}
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code>
+            class Semigroup a where
+                type (x :: a) &lt;> (y :: a) :: a
+
+                (%&lt;>) ::
+                    Sing (x :: a) -> Sing (y :: a) -> Sing (x &lt;> y)
+
+                associativity ::
+                    Sing (x :: a) -> Sing (y :: a) -> Sing (z :: a) ->
+                    ((x &lt;> y) &lt;> z) :~: (x &lt;> (y &lt;> z))
+
+            (&lt;>) :: (SingKind m, Semigroup m) =>
+                    Demote m -> Demote m -> Demote m
+            x &lt;> y = withSomeSing x $ \sX ->
+                         withSomeSing y $ \sY ->
+                             fromSing (sX %&lt;> sY)
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code>
+            instance Semigroup [a] where
+                type xs &lt;> ys = xs :++ ys
+                (%&lt;>) = (%:++)
+
+                associativity xs ys zs = case xs of
+                    SNil -> Refl
+                    SCons _ xs' ->
+                        case associativity xs' ys zs of
+                            Refl -> Refl
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code>
+            instance SOrd a => Semigroup (Max a) where
+                type 'Max x &lt;> 'Max y = 'Max (Singletons.Max x y)
+                SMax x %&lt;> SMax y = SMax (sMax x y)
+                associativity = undefined
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code class="haskell">
+            print ([1, 2] &lt;> [3] :: [Integer])
+          </code></pre>
+          <pre class="fragment"><code class="haskell">
+            print ([1, 2] &lt;> [3] :: [Int])
+              • Couldn't match type ‘Demote a’ with ‘Int’
+                Expected type: [Int]
+                  Actual type: Demote [a]
+                The type variable ‘a’ is ambiguous
+          </code></pre>
+        </section>
 
         <!-- TODO http://www.cse.chalmers.se/~jomoa/papers/typeclasslaws.pdf -->
       </div>
