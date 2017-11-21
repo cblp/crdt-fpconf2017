@@ -43,6 +43,6 @@ digraph {
         Op -> Payload2;
     }
 
-    User -> Op [label="Intent", minlen=1];
-    User -> Payload1 [dir=back, color=green];
+    User -> Op [taillabel = "Intent       ", minlen = 2, labeldistance = 2];
+    User -> Payload1 [color = green, dir = back, fontcolor = green, taillabel = "                query", labeldistance = 2];
 }
