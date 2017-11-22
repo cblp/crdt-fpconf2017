@@ -499,14 +499,17 @@
         <section>
           <h2>В действии</h2>
           <pre><code class="haskell">
-            print ([1, 2] &lt;> [3] :: [Integer])
+            λ> print ([1, 2] &lt;> [3] :: [Integer])
+            [1,2,3]
           </code></pre>
           <pre class="fragment"><code class="haskell">
-            print ([1, 2] &lt;> [3] :: [Int])
-              • Couldn't match type ‘Demote a’ with ‘Int’
-                Expected type: [Int]
-                  Actual type: Demote [a]
-                The type variable ‘a’ is ambiguous
+            λ> print ([1, 2] &lt;> [3] :: [Int])
+
+            error:
+                • Couldn't match type ‘Demote a’ with ‘Int’
+                  Expected type: [Int]
+                    Actual type: Demote [a]
+                  The type variable ‘a’ is ambiguous
           </code></pre>
         </section>
 
@@ -514,7 +517,11 @@
 
         <!-- TODO: https://github.com/LeventErkok/sbvPlugin -->
 
-        <!-- TODO: выводы -->
+        <section data-markdown>
+          ## Выводы
+
+          1. Dependent Haskell — не сегодня
+        </section>
       </div>
     </div>
 
