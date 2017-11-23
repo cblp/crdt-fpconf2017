@@ -26,7 +26,7 @@
       document.getElementsByTagName( 'head' )[0].appendChild( link );
     </script>
 
-    <style media="screen">
+    <style>
       section img.element {
         background: transparent;
         border: 0;
@@ -36,7 +36,7 @@
         text-align: center;
       }
       table.figure td {
-        width: 20%;
+        width: 33%;
         text-align: center;
         font-size: 500%;
         padding: 0;
@@ -44,6 +44,7 @@
       .term {color: #99f;}
       .term-def {color: #9f9;}
       p.formula-large {font-size: 200%;}
+      p.formula-medium {font-size: 130%;}
     </style>
   </head>
 
@@ -70,23 +71,24 @@
         </section>
 
         <section>
-          <h1>Распределённая система</h1>
+          <h2>Распределённая система<br>&nbsp;</h2>
           <table class=figure>
             <tr>
               <td>
                 <img class="element" src="database.png" alt="DB" border=0>
               </td>
               <td>
-                <span data-fragment-index=1 style="position: absolute;" class="current-visible">❌</span>
-                <span data-fragment-index=2 style="position: absolute;">⚔️</span>
-                <span data-fragment-index=3 style="position: absolute;">👮</span>
-                ⇆
+                <span data-fragment-index=1 style="position: absolute; width: 23%; text-align: center;" class="current-visible">⇆</span>
+                <span data-fragment-index=2 style="position: absolute; width: 23%; text-align: center;" class="current-visible">❌</span>
+                <span data-fragment-index=3 style="position: absolute; width: 23%; text-align: center;" class="current-visible">⚔️</span>
+                <span data-fragment-index=4>👮</span>
               </td>
               <td>
                 <img class="element" src="database.png" alt="DB" border=0>
               </td>
             </tr>
           </table>
+          <h2>&nbsp;</h2>
         </section>
 
         <section>
@@ -160,7 +162,7 @@
 
         <section>
           <h1>(множества, $(\cup)$)</h1>
-          <p class="formula-large">
+          <p class="formula-medium">
             $ (X \cup Y) \cup Z = X \cup (Y \cup Z) $<br>
             $ X \cup Y = Y \cup X $<br>
             $ X \cup X = X $
@@ -168,7 +170,7 @@
         </section>
 
         <section>
-          <h1>$(ℝ, \max)$</h1>
+          <h1>(ℝ, $\max$)</h1>
           <p style="font-size: 130%;">
             $ \max (\max (x, y), z) = \max (x, \max (y, z)) $<br>
             $ \max (x, y) = \max (y, x) $<br>
@@ -177,45 +179,66 @@
         </section>
 
         <section>
-          <h2>$(ℝ, (+))$ — полугруппа</h2>
+          <h2>(ℝ, (+)) — полугруппа</h2>
           <p class="formula-large">$ (x + y) + z = x + (y + z) $</p>
           <h2>но не полурешётка</h2>
-          <p class="formula-large">$ x + x \ne x $</p>
+          <p class="formula-large">$ \cancel{x + x = x} $</p>
         </section>
 
         <section data-markdown>
           ## Полурешётка в Haskell
 
-              class Semigroup a where
-                  (&lt;>) :: a -> a -> a
+          📦 `base`
+          ```
+          -- | associativity: (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
+          class Semigroup a where
+              (&lt;>) :: a -> a -> a
+          ```
 
-              class Semigroup a => Semilattice a
+          📦 `crdt`
+          ```
+          -- | commutativity: x &lt;> y == y &lt;> x
+          --   idempotency: x &lt;> x == x
+          class Semigroup a => Semilattice a
 
-              type CvRDT = Semilattice
+          type CvRDT = Semilattice
+          ```
         </section>
 
         <section data-markdown>
           ## `Set` — полурешётка
 
-              instance Ord a => Semigroup (Set a) where
-                  (&lt;>) = union
+          📦 `base`
+          ```
+          instance Ord a => Semigroup (Set a) where
+              (&lt;>) = union
+          ```
 
-              instance Ord a => Semilattice (Set a)
+          📦 `crdt`
+          ```
+          instance Ord a => Semilattice (Set a)
 
-              -- instance Ord a => CvRDT (Set a) -- автоматически
+          -- instance Ord a => CvRDT (Set a) -- автоматически
+          ```
         </section>
 
         <section data-markdown>
           ## `Max` — полурешётка
 
-              newtype Max a = Max a
+          📦 `base`
+          ```
+          newtype Max a = Max a
 
-              instance Ord a => Semigroup (Max a) where
-                  Max x &lt;> Max y = Max (max x y)
+          instance Ord a => Semigroup (Max a) where
+              Max x &lt;> Max y = Max (max x y)
+          ```
 
-              instance Ord a => Semilattice (Max a)
+          📦 `crdt`
+          ```
+          instance Ord a => Semilattice (Max a)
 
-              -- instance Ord a => CvRDT (Max a) -- автоматически
+          -- instance Ord a => CvRDT (Max a) -- автоматически
+          ```
         </section>
 
         <section>
