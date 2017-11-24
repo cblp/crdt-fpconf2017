@@ -536,12 +536,15 @@
           </code></pre>
           <pre class="fragment"><code class="haskell">
             λ> print ([1, 2] &lt;> [3] :: [Int])
-
             error:
                 • Couldn't match type ‘Demote a’ with ‘Int’
                   Expected type: [Int]
                     Actual type: Demote [a]
                   The type variable ‘a’ is ambiguous
+          </code></pre>
+          <pre class="fragment"><code class="haskell">
+            λ> print ([1, 2] &lt;> [-3] :: [Integer])
+            *** Exception: Negative singleton nat
           </code></pre>
         </section>
 
