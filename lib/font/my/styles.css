@@ -1,0 +1,52 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "crdt-fpconf2017";
+  src:url("fonts/crdt-fpconf2017.eot");
+  src:url("fonts/crdt-fpconf2017.eot?#iefix") format("embedded-opentype"),
+    url("fonts/crdt-fpconf2017.woff") format("woff"),
+    url("fonts/crdt-fpconf2017.ttf") format("truetype"),
+    url("fonts/crdt-fpconf2017.svg#crdt-fpconf2017") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[data-icon]:before {
+  font-family: "crdt-fpconf2017" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  vertical-align: middle;
+  padding-right: 0.25em;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "crdt-fpconf2017" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  vertical-align: middle;
+  padding-right: 0.25em;
+}
+
+.icon-package:before {
+  content: "\61";
+}
+.icon-github:before {
+  content: "\62";
+}
+.icon-haskell:before {
+  content: "\63";
+}

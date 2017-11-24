@@ -14,8 +14,9 @@
     <!-- Theme used for syntax highlighting of code -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
 
-    <link rel="stylesheet" href="lib/font/mfizz/font-mfizz.css">
-    <link rel="stylesheet" href="lib/font/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="lib/font/my/styles.css">
+    <!-- <link rel="stylesheet" href="lib/font/mfizz/font-mfizz.css"> -->
+    <!-- <link rel="stylesheet" href="lib/font/awesome/css/font-awesome.min.css"> -->
 
     <!-- Printing and PDF exports -->
     <script>
@@ -108,7 +109,7 @@
           </table>
           <h2>
             <a href="https://hackage.haskell.org/package/crdt">
-              <i class="icon-haskell"></i> <code>crdt</code>
+              <code class="icon-haskell">crdt</code>
             </a>
           </h2>
         </section>
@@ -185,60 +186,60 @@
           <p class="formula-large">$ \cancel{x + x = x} $</p>
         </section>
 
-        <section data-markdown>
-          ## Полурешётка в Haskell
+        <section>
+          <h2>Полурешётка в Haskell</h2>
 
-          📦 `base`
-          ```
+          <code class="icon-package">base</code>
+          <pre><code>
           -- | associativity: (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
           class Semigroup a where
               (&lt;>) :: a -> a -> a
-          ```
+          </code></pre>
 
-          📦 `crdt`
-          ```
+          <code class="icon-package">crdt</code>
+          <pre><code>
           -- | commutativity: x &lt;> y == y &lt;> x
           --   idempotency: x &lt;> x == x
           class Semigroup a => Semilattice a
 
           type CvRDT = Semilattice
-          ```
+          </code></pre>
         </section>
 
-        <section data-markdown>
-          ## `Set` — полурешётка
+        <section>
+          <h2><code>Set</code> — полурешётка</h2>
 
-          📦 `base`
-          ```
+          <code class="icon-package">base</code>
+          <pre><code>
           instance Ord a => Semigroup (Set a) where
               (&lt;>) = union
-          ```
+          </code></pre>
 
-          📦 `crdt`
-          ```
+          <code class="icon-package">crdt</code>
+          <pre><code>
           instance Ord a => Semilattice (Set a)
 
           -- instance Ord a => CvRDT (Set a) -- автоматически
-          ```
+          </code></pre>
         </section>
 
-        <section data-markdown>
-          ## `Max` — полурешётка
+        <section>
+          <h2><code>Max</code> — полурешётка</h2>
 
-          📦 `base`
-          ```
+          <code class="icon-package">base</code>
+          <pre><code>
           newtype Max a = Max a
 
           instance Ord a => Semigroup (Max a) where
               Max x &lt;> Max y = Max (max x y)
-          ```
+          </code></pre>
 
-          📦 `crdt`
-          ```
+          <code class="icon-package">crdt</code>
+          <pre><code>
           instance Ord a => Semilattice (Max a)
 
           -- instance Ord a => CvRDT (Max a) -- автоматически
-          ```
+          </code></pre>
         </section>
 
         <section>
@@ -560,12 +561,12 @@
           <h2><nobr>Юрий Сыровецкий,</nobr> <nobr>Николай Логинов</nobr></h2>
           <h2>
             <a href="https://hackage.haskell.org/package/crdt">
-              <i class="icon-haskell"></i> <code>crdt</code>
+              <code class="icon-haskell">crdt</code>
             </a>
           </h2>
           <h2>
             <a href="https://github.com/cblp/crdt">
-              <i class="fa fa-github"></i> <code>cblp/crdt</code>
+              <code class="icon-github">cblp/crdt</code>
             </a>
           </h2>
         </section>
