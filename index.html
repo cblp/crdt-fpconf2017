@@ -53,8 +53,9 @@
     <div class="reveal">
       <div class="slides">
         <section>
-          <h1>CRDT &lt;> Haskell</h1>
-          <h2><nobr>Юрий Сыровецкий,</nobr> <nobr>Николай Логинов</nobr></h2>
+          <h1>CRDT <code>&lt;></code> Haskell</h1>
+          <h2>Юрий Сыровецкий</h2>
+          <h2>Николай Логинов</h2>
         </section>
 
         <section>
@@ -83,6 +84,7 @@
                 <span data-fragment-index=2 style="position: absolute; width: 23%; text-align: center;" class="current-visible">❌</span>
                 <span data-fragment-index=3 style="position: absolute; width: 23%; text-align: center;" class="current-visible">⚔️</span>
                 <span data-fragment-index=4>👮</span>
+                <!-- TODO: replace emojis with images; remove style hack -->
               </td>
               <td>
                 <img class="element" src="database.png" alt="DB" border=0>
@@ -270,23 +272,24 @@
             <tr>
               <td>
                 <code>
-                  <span class=f3>{</span><span class=f1>0:</span><span
-                  class=f0>37175</span><span class=f3>, &nbsp;1:18267,
-                  &nbsp;2:52733}<br>&uarr;</span>
+                  <span class=f3>{</span><span class=f1>0:</span>
+                  <span class=f0>717</span><span class=f3>, &nbsp;1: 826,
+                  &nbsp;2: 273}<br>&uarr;</span>
                 </code>
               </td>
               <td>
                 <code>
-                  <span class=f3>{0:37175,</span>
-                  <span class=f1>&nbsp;1:</span><span class=f0>18267</span><span
-                  class=f3>, &nbsp;2:52733}<br>&uarr;</span>
+                  <span class=f3>{0: 717,</span>
+                  <span class=f1>&nbsp;1:</span>
+                  <span class=f0>826</span><span class=f3>,
+                  &nbsp;2: 273}<br>&uarr;</span>
                 </code>
               </td>
               <td>
                 <code>
-                  <span class=f3>{0:37175, &nbsp;1:18267,</span>
-                  <span class=f1>&nbsp;2:</span><span class=f0>52733</span><span
-                  class=f3>}<br>&uarr;</span>
+                  <span class=f3>{0: 717, &nbsp;1: 826,</span>
+                  <span class=f1>&nbsp;2:</span>
+                  <span class=f0>273</span><span class=f3>}<br>&uarr;</span>
                 </code>
               </td>
             </tr>
@@ -294,7 +297,7 @@
 
           <p class=f2>
             &darr;<br>
-            <code>{0:37175, 1:18267, 2:52733}</code>
+            <code>{0: 717, 1: 826, 2: 273}</code>
           </p>
         </section>
 
@@ -459,7 +462,7 @@
         <section>
           <h1>Type-level</h1>
           <p>
-            Justin Le,
+            Justin Le,<br>
             <a href="https://blog.jle.im/entry/verified-instances-in-haskell.html">blog.jle.im/<wbr>entry/<wbr>verified-instances-in-haskell</a>
           </p>
         </section>
@@ -561,7 +564,8 @@
 
         <section>
           <h1>Вопросы</h1>
-          <h2><nobr>Юрий Сыровецкий,</nobr> <nobr>Николай Логинов</nobr></h2>
+          <h2>Юрий Сыровецкий</h2>
+          <h2>Николай Логинов</h2>
           <h2>
             <a href="https://hackage.haskell.org/package/crdt">
               <code class="icon-haskell">crdt</code>
