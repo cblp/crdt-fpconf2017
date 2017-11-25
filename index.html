@@ -425,14 +425,13 @@
           # Как убедить себя, что код правильный?
         </section>
 
-        <section data-markdown>
-          ## Всем известно, что законы классов
-          # не выражаются в Haskell
+        <section>
+          <h2>Всем известно, что законы классов</h2>
+          <h1>Haskell <nobr>не проверяет</nobr></h1>
         </section>
 
         <section>
-          <h1>Property-based testing</h1>
-          <!-- <h3>То есть законы классов выражаются в Haskell, но только в значениях</h3> -->
+          <h2>Property-based testing (QuickCheck)</h2>
 
           <pre><code>
             associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
@@ -563,6 +562,7 @@
         <section data-markdown>
           ## Выводы
 
+          1. Property-based тестирование — вещь
           1. Dependent Haskell — не сегодня
           <!-- TODO: ещё -->
         </section>
