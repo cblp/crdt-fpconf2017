@@ -59,21 +59,20 @@
         </section>
 
         <section>
+          <h2>Данные<br>&nbsp;</h2>
           <table class=figure>
             <tr>
-              <td>
-              </td>
+              <td></td>
               <td>
                 <img class="element" src="database.png" alt="DB" border=0>
               </td>
-              <td>
-              </td>
+              <td></td>
             </tr>
           </table>
         </section>
 
         <section>
-          <h2>Распределённая система<br>&nbsp;</h2>
+          <h2>Распределённые данные<br>&nbsp;</h2>
           <table class=figure>
             <tr>
               <td>
@@ -439,11 +438,17 @@
 
           <pre><code>
             associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
-
             commutativity  =  \x y  ->  x &lt;> y == y &lt;> x
-
             idempotency    =  \x  ->  x &lt;> x == x
           </code></pre>
+
+          <pre><code>
+            cvrdtLaws @(Set Char)
+            cvrdtLaws @(Max Char)
+            cvrdtLaws @(GCounter)
+            ...
+          </code></pre>
+
           <pre><code>
             associativity:
               +++ OK, passed 100 tests.
@@ -452,6 +457,15 @@
             idempotency:
               +++ OK, passed 100 tests.
           </code></pre>
+        </section>
+
+        <section>
+          <h2>Property-based testing (QuickCheck)</h2>
+          <ul>
+            <li>легко использовать</li>
+            <li>нет 100% гарантии</li>
+            <li>зависит от распределения</li>
+          </ul>
         </section>
 
         <section>
@@ -598,6 +612,7 @@
         <section data-markdown>
           ## Планы на будущее
 
+          1. Интегрировать со Swarm
           1. ~~Написать~~ Дописать приложение, использующее CRDT
           1. Попробовать Coq
         </section>
@@ -659,7 +674,7 @@
         ],
         history: true,
         slideNumber: true,
-        transition: 'none',
+        transition: 'fade',
       });
     </script>
   </body>
