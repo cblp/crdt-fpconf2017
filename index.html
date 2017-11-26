@@ -442,10 +442,10 @@
             idempotency    =  \x  ->  x &lt;> x == x
           </code></pre>
 
-          <pre><code>
+          <pre><code class="haskell">
             cvrdtLaws @(Set Char)
             cvrdtLaws @(Max Char)
-            cvrdtLaws @(GCounter)
+            cvrdtLaws @GCounter
             ...
           </code></pre>
 
@@ -458,6 +458,8 @@
               +++ OK, passed 100 tests.
           </code></pre>
         </section>
+
+        <!-- TODO: failed QuickCheck test for non-unique LWW timestamps -->
 
         <section>
           <h2>Property-based testing (QuickCheck)</h2>
