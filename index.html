@@ -258,8 +258,7 @@
                 }
 
             instance Ord (LWW a) where
-                LWW{timestamp = t1} &lt;= LWW{timestamp = t2} =
-                    t1 &lt;= t2
+                x &lt;= y  =  timestamp x &lt;= timestamp y
 
             instance Semigroup (LWW a) where
                 (&lt;>) = max
@@ -456,26 +455,31 @@
         </section>
 
         <section>
-          <h1>
+          <h2>
             <a href="http://hackage.haskell.org/package/ClassLaws">
               <code class="icon-haskell">ClassLaws</code>
             </a>
-          </h1>
+          </h2>
 
           <a href="http://wiki.portal.chalmers.se/cse/pmwiki.php/FP/ClassLaws">
             wiki.portal.chalmers.se/<wbr>cse/<wbr>pmwiki.php/<wbr>FP/<wbr>ClassLaws</a>,
           2012
 
           <ul>
-            <li>
+            <li class="fragment">
               дополнительный класс с законами на ваш класс
               <ul>
-                <li>надо вызывать QuickCheck руками</li>
+                <li class="fragment">надо вызывать QuickCheck руками</li>
               </ul>
             </li>
+            <li class="fragment">
+              DSL для формального доказательства, затем SMT-решатель
+              <ul>
+                <li class="fragment">есть проблеммы с рекурсией</li>
+              </ul>
+            </li>
+            <li class="fragment">не развивается с 2012 года</li>
           </ul>
-
-          <!-- TODO: QuickCheck laws -->
 
           <!-- TODO: prove laws with SMT-solvers (Z3, E); ограничения — рекурсия -->
 
@@ -485,7 +489,7 @@
         <section>
           <h1>Liquid Haskell</h1>
           <ul>
-            <li>не работает с классами</li> <!-- TODO: check -->
+            <li class="fragment">не работает с классами</li> <!-- TODO: check -->
           </ul>
         </section>
         <!-- TODO: Liquid haskell -->
