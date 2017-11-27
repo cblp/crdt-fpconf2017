@@ -138,6 +138,20 @@
         </section>
 
         <section>
+          <ol>
+            <li>
+              Модели CRDT
+              <ul>
+                <li>State-based (Convergent)</li>
+                <li>Op-based (Commutative)</li>
+              </ul>
+            </li>
+            <li>Реализация</li>
+            <li>Проблемы и решения</li>
+          </ol>
+        </section>
+
+        <section>
           <h1>
             <a href="https://hackage.haskell.org/package/crdt">
               <i class="icon-haskell"></i> <code>crdt</code>
@@ -192,7 +206,8 @@
 
         <section data-markdown>
           # Полурешётка =
-          # _Convergent_ RDT (CvRDT)
+          # _Convergent_ RDT
+          ## (CvRDT, State-based)
         </section>
 
         <section>
@@ -365,7 +380,8 @@
         </section>
 
         <section>
-          <h2><em>Commutative</em> RDT (CmRDT)</h2>
+          <h2><em>Commutative</em> RDT</h2>
+          <h3>(CmRDT, Op-based)</h3>
           <img
             alt="CmRDT"
             class=element
@@ -443,6 +459,8 @@
                     _                           ->  Just (pure op)
           </code></pre>
         </section>
+
+        <!-- TODO: другие виды и развитие CRDT -->
 
         <section data-markdown>
           # Как убедить себя, что код правильный?
@@ -717,4 +735,7 @@
   </body>
 </html>
 
-<!-- TODO: переход к полурешёткам. интонацией выделять переходы. план объявить сначала (Cv, Cm). примеры из реальности: непрочитанные сообщения -- а потом нет. LWW => Cassandra => Apple. контакт с аудиторией. -->
+<!-- TODO: интонацией выделять переходы -->
+<!-- TODO: примеры из реальности: непрочитанные сообщения -- а потом нет -->
+<!-- TODO: LWW => Cassandra => Apple -->
+<!-- TODO: контакт с аудиторией -->
