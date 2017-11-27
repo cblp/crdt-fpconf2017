@@ -473,7 +473,21 @@
           </code></pre>
         </section>
 
-        <!-- TODO: failed QuickCheck test for non-unique LWW timestamps -->
+        <section>
+          <pre><code>
+            LWW commutativity: FAIL
+              *** Failed! Falsifiable (after 1 test):
+              x = LWW {value = 'A', time = LamportTime 0 (Pid 0)}
+              y = LWW {value = 'B', time = LamportTime 0 (Pid 0)}
+              LWW {value = 'A', time = LamportTime 0 (Pid 0)} /=
+                LWW {value = 'B', time = LamportTime 0 (Pid 0)}
+          </code></pre>
+          <pre><code>
+            cvrdtLaws ::
+                (Arbitrary a, CvRDT a, Eq a, Show a) =>
+                Maybe (StateT s Gen a, s) -> [TestTree]
+          </code></pre>
+        </section>
 
         <section>
           <h2>Property-based testing (QuickCheck)</h2>
@@ -516,6 +530,7 @@
           <h1>Liquid Haskell</h1>
           <ul>
             <li class="fragment">не работает с классами</li> <!-- TODO: check -->
+            <!-- TODO: example -->
           </ul>
         </section>
 
