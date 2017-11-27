@@ -15,6 +15,17 @@
     <link rel="stylesheet" href="lib/css/zenburn.css">
 
     <link rel="stylesheet" href="lib/font/my/styles.css">
+    <style>
+      [data-icon]:before {
+        vertical-align: middle;
+      }
+
+      [class^="icon-"]:before,
+      [class*=" icon-"]:before {
+        vertical-align: middle;
+      }
+    </style>
+
     <!-- <link rel="stylesheet" href="lib/font/mfizz/font-mfizz.css"> -->
     <!-- <link rel="stylesheet" href="lib/font/awesome/css/font-awesome.min.css"> -->
 
@@ -79,11 +90,22 @@
                 <img class="element" src="database.png" alt="DB" border=0>
               </td>
               <td>
-                <span data-fragment-index=1 style="position: absolute; width: 23%; text-align: center;" class="current-visible">⇆</span>
-                <span data-fragment-index=2 style="position: absolute; width: 23%; text-align: center;" class="current-visible">❌</span>
-                <span data-fragment-index=3 style="position: absolute; width: 23%; text-align: center;" class="current-visible">⚔️</span>
-                <span data-fragment-index=4>👮</span>
-                <!-- TODO: replace emojis with images; remove style hack -->
+                <span
+                  class="fade-out icon-arrows-h"
+                  data-fragment-index=1
+                  style="position: absolute;">
+                </span>
+                <span
+                  class="current-visible icon-times"
+                  data-fragment-index=1
+                  style="color: red; position: absolute;">
+                </span>
+                <span
+                  class="current-visible icon-exclamation-triangle"
+                  data-fragment-index=2
+                  style="color: yellow; position: absolute;">
+                </span>
+                <span class="icon-ambulance" data-fragment-index=3></span>
               </td>
               <td>
                 <img class="element" src="database.png" alt="DB" border=0>
@@ -100,7 +122,7 @@
                 <img class="element" src="database.png" alt="DB" border=0>
               </td>
               <td>
-                🤝
+                <i class="icon-like"></i>
               </td>
               <td>
                 <img class="element" src="database.png" alt="DB" border=0>
@@ -112,7 +134,7 @@
         <section>
           <h1>
             <a href="https://hackage.haskell.org/package/crdt">
-              <code class="icon-haskell">crdt</code>
+              <i class="icon-haskell"></i> <code>crdt</code>
             </a>
           </h1>
           <h2>
@@ -195,14 +217,14 @@
         <section>
           <h2>Полурешётка в Haskell</h2>
 
-          <code class="icon-package">base</code>
+          <i class="icon-package"></i> <code>base</code>
           <pre><code>
           -- | associativity: (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
           class Semigroup a where
               (&lt;>) :: a -> a -> a
           </code></pre>
 
-          <code class="icon-package">crdt</code>
+          <i class="icon-package"></i> <code>crdt</code>
           <pre><code>
           -- | commutativity: x &lt;> y == y &lt;> x
           --   idempotency: x &lt;> x == x
@@ -215,13 +237,13 @@
         <section>
           <h2><code>Set</code> — полурешётка</h2>
 
-          <code class="icon-package">base</code>
+          <i class="icon-package"></i> <code>base</code>
           <pre><code>
           instance Ord a => Semigroup (Set a) where
               (&lt;>) = union
           </code></pre>
 
-          <code class="icon-package">crdt</code>
+          <i class="icon-package"></i> <code>crdt</code>
           <pre><code>
           instance Ord a => Semilattice (Set a)
 
@@ -232,7 +254,7 @@
         <section>
           <h2><code>Max</code> — полурешётка</h2>
 
-          <code class="icon-package">base</code>
+          <i class="icon-package"></i> <code>base</code>
           <pre><code>
           newtype Max a = Max a
 
@@ -240,7 +262,7 @@
               Max x &lt;> Max y = Max (max x y)
           </code></pre>
 
-          <code class="icon-package">crdt</code>
+          <i class="icon-package"></i> <code>crdt</code>
           <pre><code>
           instance Ord a => Semilattice (Max a)
 
@@ -465,7 +487,7 @@
         <section>
           <h2>
             <a href="http://hackage.haskell.org/package/ClassLaws">
-              <code class="icon-haskell">ClassLaws</code>
+              <i class="icon-haskell"></i> <code>ClassLaws</code>
             </a>
           </h2>
 
@@ -617,12 +639,12 @@
           <h2>Николай Логинов</h2>
           <h2>
             <a href="https://hackage.haskell.org/package/crdt">
-              <code class="icon-haskell">crdt</code>
+              <i class="icon-haskell"></i> <code>crdt</code>
             </a>
           </h2>
           <h2>
             <a href="https://github.com/cblp/crdt">
-              <code class="icon-github">cblp/crdt</code>
+              <i class="icon-github"></i> <code>cblp/crdt</code>
             </a>
           </h2>
         </section>
