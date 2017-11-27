@@ -411,12 +411,8 @@
 
                 type Intent (TwoPSet a) = TwoPSet a
                 makeOp op s = case op of
-                    Add    _  ->  Just (pure op)
-                    Remove a  ->
-                        if a `member` s then
-                            Just (pure op)
-                        else
-                            Nothing
+                    Remove a | a `notMember` s  ->  Nothing
+                    _                           ->  Just (pure op)
           </code></pre>
         </section>
 
