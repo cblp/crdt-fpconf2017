@@ -168,7 +168,7 @@
         </section>
 
         <section>
-          <h1>(множества, $(\cup)$)</h1>
+          <h1>(множества, (∪))</h1>
           <p class="formula-medium">
             $ (X \cup Y) \cup Z = X \cup (Y \cup Z) $<br>
             $ X \cup Y = Y \cup X $<br>
@@ -177,7 +177,7 @@
         </section>
 
         <section>
-          <h1>(ℝ, $\max$)</h1>
+          <h1>(ℝ, max)</h1>
           <p style="font-size: 130%;">
             $ \max (\max (x, y), z) = \max (x, \max (y, z)) $<br>
             $ \max (x, y) = \max (y, x) $<br>
@@ -252,15 +252,16 @@
           <h2><code>LWW</code> (Last Write Wins)</h2>
           <pre><code>
             data LWW a = LWW
-                { value     :: a
-                , timestamp :: Timestamp
+                { value :: a
+                , time  :: Timestamp
                 }
 
-            instance Ord (LWW a) where
-                x &lt;= y  =  timestamp x &lt;= timestamp y
-
             instance Semigroup (LWW a) where
-                (&lt;>) = max
+                x &lt;> y =
+                    if time x > time y then
+                        x
+                    else
+                        y
 
             instance Semilattice (LWW a)
 
@@ -364,12 +365,9 @@
           <h2><code>LWW</code> (Last Write Wins)</h2>
           <pre><code>
             data LWW a = LWW
-                { value     :: a
-                , timestamp :: Timestamp
+                { value :: a
+                , time  :: Timestamp
                 }
-
-            instance CausalOrd (LWW a) where
-                affects _ _ = False
 
             instance Eq a => CmRDT (LWW a) where
                 type Payload (LWW a) = LWW a
@@ -384,9 +382,6 @@
           <h2>Counter</h2>
           <pre><code>
             data Counter = Increment | Decrement
-
-            instance CausalOrd (LWW a) where
-                affects _ _ = False
 
             instance CmRDT Counter where
                 type Payload Counter = Integer
@@ -405,8 +400,8 @@
             data TwoPSet a = Add a | Remove a
 
             instance Eq a => CausalOrd (TwoPSet a) where
-                Remove a  `affects`  Add b  =  a == b
-                _         `affects`  _      =  False
+                Add a  `affects`  Remove b  =  a == b
+                _      `affects`  _         =  False
 
             instance Ord a => CmRDT (TwoPSet a) where
                 type Payload (TwoPSet a) = Set a
@@ -417,10 +412,11 @@
                 type Intent (TwoPSet a) = TwoPSet a
                 makeOp op s = case op of
                     Add    _  ->  Just (pure op)
-                    Remove a  ->  if a `member` s then
-                                      Just (pure op)
-                                  else
-                                      Nothing
+                    Remove a  ->
+                        if a `member` s then
+                            Just (pure op)
+                        else
+                            Nothing
           </code></pre>
         </section>
 
@@ -681,3 +677,5 @@
     </script>
   </body>
 </html>
+
+<!-- TODO: переход к полурешёткам. интонацией выделять переходы. план объявить сначала (Cv, Cm). примеры из реальности: непрочитанные сообщения -- а потом нет. LWW => Cassandra => Apple. контакт с аудиторией. -->
