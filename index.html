@@ -414,6 +414,14 @@
         </section>
 
         <section>
+          <p>Тип коммутативен, если от перестановки любых двух конкурентных операций результат не изменяется.</p>
+
+          <p>$$ \forall x, y. x \parallel y \implies x \circ y = y \circ x $$</p>
+
+          <p>$$ x \parallel y \xlongequal{\mathrm{def}} x \nprec y \land y \nprec x $$</p>
+        </section>
+
+        <section>
           <h2>CmRDT в Haskell</h2>
           <pre><code>
             class CausalOrd op => CmRDT op where
@@ -428,8 +436,6 @@
           </code></pre>
           (да, чуть сложнее, чем CvRDT)
         </section>
-
-        <!-- TODO: property for CmRDT -->
 
         <section>
           <h2><code>LWW</code> (Last Write Wins)</h2>
@@ -544,6 +550,22 @@
             cvrdtLaws ::
                 (Arbitrary a, CvRDT a, Eq a, Show a) =>
                 Maybe (StateT s Gen a, s) -> [TestTree]
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code>
+            cmrdtLaw = property $ \(s :: Payload op) in1 in2 pid1 pid2 ->
+                fromMaybe discard $ do
+                    getOp1 &lt;- makeOp @op in1 s
+                    getOp2 &lt;- makeOp @op in2 s
+                    let (op1, op2) = runLamportClock $
+                            (,) &lt;$> runProcess pid1 getOp1
+                                &lt;*> runProcess pid2 getOp2
+                    pure $
+                        concurrent op1 op2 ==>
+                        (apply op1 . apply op2) s ===
+                        (apply op2 . apply op1) s
           </code></pre>
         </section>
 

@@ -20,7 +20,7 @@ var RevealMath = window.RevealMath || (function(){
 			},
 			skipStartupTypeset: true,
 			TeX: {
-				extensions: ["cancel.js"],
+				extensions: ["cancel.js", "extpfeil.js"],
 			},
 		});
 
