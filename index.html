@@ -69,6 +69,8 @@
           <h2>Николай Логинов</h2>
         </section>
 
+        <!-- TODO: слайд про МХЛ -->
+
         <section data-background-image="intro-conflict-1.jpg">
         </section>
 
@@ -120,6 +122,9 @@
           </table>
         </section>
 
+        <!-- TODO: иллюстрация конфликта -->
+        <!-- TODO: примеры из реальности: непрочитанные сообщения -- а потом нет -->
+
         <section>
           <h2>CRDT — Conflict-free Replicated Data Type</h2>
           <table class=figure>
@@ -156,6 +161,8 @@
           </h2>
         </section>
 
+        <!-- TODO: переход к полурешёткам -->
+
         <section>
           <h1>Полурешётка</h1>
           <img
@@ -166,6 +173,7 @@
         </section>
 
         <section>
+          <!-- TODO: продублировать формулы на первом слайде -->
           <p>
             <strong>Определение 1.</strong>
             Множество $A$ с операцией $(⋄)$ —
@@ -285,6 +293,8 @@
           </code></pre>
         </section>
 
+        <!-- TODO: пример для максимума -- счётчик? -->
+
         <section>
           <h2><code>LWW</code> (Last Write Wins)</h2>
           (базовый тип в Cassandra)
@@ -401,6 +411,8 @@
           (да, чуть сложнее, чем CvRDT)
         </section>
 
+        <!-- TODO: property for CmRDT -->
+
         <section>
           <h2><code>LWW</code> (Last Write Wins)</h2>
           <pre><code>
@@ -439,10 +451,6 @@
           <pre><code>
             data TwoPSet a = Add a | Remove a
 
-            instance Eq a => CausalOrd (TwoPSet a) where
-                Add a  `affects`  Remove b  =  a == b
-                _      `affects`  _         =  False
-
             instance Ord a => CmRDT (TwoPSet a) where
                 type Payload (TwoPSet a) = Set a
                 apply op s = case op of
@@ -453,7 +461,12 @@
                 makeOp op s = case op of
                     Remove a | a `notMember` s  ->  Nothing
                     _                           ->  Just (pure op)
+
+            instance Eq a => CausalOrd (TwoPSet a) where
+                Add a  `affects`  Remove b  =  a == b
+                _      `affects`  _         =  False
           </code></pre>
+          <!-- TODO: не очевидно, что CmRDT (2PSet) -->
         </section>
 
         <section data-markdown>
@@ -547,6 +560,7 @@
               DSL для формального доказательства, затем SMT-решатель
               <ul>
                 <li class="fragment">есть проблеммы с рекурсией</li>
+                <!-- TODO: почему у SMT проблемы с рекурсией? -->
               </ul>
             </li>
             <li class="fragment">не развивается с 2012 года</li>
@@ -741,14 +755,5 @@
 </html>
 
 <!-- TODO: интонацией выделять переходы -->
-<!-- TODO: примеры из реальности: непрочитанные сообщения -- а потом нет -->
 <!-- TODO: контакт с аудиторией -->
-<!-- TODO: слайд про МХЛ -->
-<!-- TODO: слайд с итогами CRDT -->
-<!-- TODO: переход к полурешёткам. иллюстрация конфликта -->
-<!-- TODO: продублировать формулы на первом слайде -->
-<!-- TODO: пример для максимума -->
-<!-- TODO: property for CmRDT -->
-<!-- TODO: не очевидно, что CmRDT (2PSet) -->
-<!-- TODO: почему у SMT проблемы с рекурсией -->
 <!-- TODO: код крупнее -->
