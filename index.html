@@ -260,15 +260,15 @@
 
           <i class="icon-package"></i> <code>base</code>
           <pre><code>
-          -- | associativity: (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
+          -- associativity: (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
           class Semigroup a where
               (&lt;>) :: a -> a -> a
           </code></pre>
 
           <i class="icon-package"></i> <code>crdt</code>
           <pre><code>
-          -- | commutativity: x &lt;> y == y &lt;> x
-          --   idempotency: x &lt;> x == x
+          -- commutativity: x &lt;> y == y &lt;> x
+          -- idempotency: x &lt;> x == x
           class Semigroup a => Semilattice a
 
           type CvRDT = Semilattice
@@ -288,7 +288,8 @@
           <pre><code>
           instance Ord a => Semilattice (Set a)
 
-          -- instance Ord a => CvRDT (Set a) -- автоматически
+          -- автоматически
+          -- instance Ord a => CvRDT (Set a)
           </code></pre>
         </section>
 
@@ -307,7 +308,8 @@
           <pre><code>
           instance Ord a => Semilattice (Max a)
 
-          -- instance Ord a => CvRDT (Max a) -- автоматически
+          -- автоматически
+          -- instance Ord a => CvRDT (Max a)
           </code></pre>
         </section>
 
@@ -317,17 +319,13 @@
           <h2><code>LWW</code> (Last Write Wins)</h2>
           (базовый тип в Cassandra)
           <pre><code>
-            data LWW a = LWW
-                { value :: a
-                , time  :: Timestamp
-                }
+            data LWW a = LWW { value :: a
+                             , time  :: Timestamp }
 
             instance Semigroup (LWW a) where
-                x &lt;> y =
-                    if time x > time y then
-                        x
-                    else
-                        y
+                x &lt;> y = if time x > time y
+                             then x
+                             else y
 
             instance Semilattice (LWW a)
 
@@ -371,26 +369,34 @@
           </p>
         </section>
 
-        <section>
-          <h2>Grow-only counter</h2>
+        <section data-markdown>
+          ## Grow-only counter
 
-          <pre><code>
-            newtype GCounter = G (Map ReplicaId Natural)
+          ```
+          newtype GCounter = G (Map ReplicaId Natural)
 
-            increment :: ReplicaId -> GCounter -> GCounter
-            increment replicaId (G m) =
-                G (insertWith (+) replicaId 1 m)
+          increment :: ReplicaId -> GCounter -> GCounter
+          increment replicaId (G m) =
+              G (insertWith (+) replicaId 1 m)
 
-            query :: GCounter -> Natural
-            query (G m) = sum m
+          query :: GCounter -> Natural
+          query (G m) = sum m
+          ```
+        </section>
 
-            instance Semigroup GCounter where
-                G x &lt;> G y = G (unionWith max x y)
+        <section data-markdown>
+          ## Grow-only counter
 
-            instance Semilattice GCounter
+          ```
+          newtype GCounter = G (Map ReplicaId Natural)
 
-            -- instance CvRDT GCounter -- автоматически
-          </code></pre>
+          instance Semigroup GCounter where
+              G x &lt;> G y = G (unionWith max x y)
+
+          instance Semilattice GCounter
+
+          -- instance CvRDT GCounter -- автоматически
+          ```
         </section>
 
         <section>
@@ -414,11 +420,27 @@
         </section>
 
         <section>
-          <p>Тип коммутативен, если от перестановки любых двух конкурентных операций результат не изменяется.</p>
+          <ol>
+            <li>
+              Тип данных —
+              <em class="term-def">коммутативный реплицированный</em>,
+              если от перестановки любых двух
+              <em class="term">конкурентных</em>
+              операций результат не изменяется.
 
-          <p>$$ \forall x, y. x \parallel y \implies x \circ y = y \circ x $$</p>
+              $$ \forall x, y. x \parallel y \implies x \circ y = y \circ x $$
+            </li>
+            <li>
+              <em class="term-def">Конкурентные</em> —
+              не связанные
+              <em class="term">порядком</em>.
 
-          <p>$$ x \parallel y \xlongequal{\mathrm{def}} x \nprec y \land y \nprec x $$</p>
+              $$
+              x \parallel y \xlongequal{\mathrm{def}}
+              x \nprec y \land y \nprec x
+              $$
+            </li>
+          </ol>
         </section>
 
         <section>
@@ -429,10 +451,12 @@
                 apply :: op -> Payload op -> Payload op
 
                 type Intent op
-                makeOp :: Intent op -> Payload op -> Maybe (Process op)
+                makeOp :: Intent op ->
+                          Payload op ->
+                          Maybe (Process op)
 
             class CausalOrd a where
-                affects :: a -> a -> Bool
+                precedes :: a -> a -> Bool
           </code></pre>
           (да, чуть сложнее, чем CvRDT)
         </section>
@@ -442,15 +466,15 @@
           <pre><code>
             data LWW a = LWW
                 { value :: a
-                , time  :: Timestamp
-                }
+                , time  :: Timestamp }
 
             instance Eq a => CmRDT (LWW a) where
                 type Payload (LWW a) = LWW a
                 apply = (&lt;>)
 
                 type Intent (LWW a) = a
-                makeOp value state = Just (assign value state)
+                makeOp value state =
+                    Just (assign value state)
           </code></pre>
         </section>
 
@@ -461,12 +485,11 @@
 
             instance CmRDT Counter where
                 type Payload Counter = Integer
-                apply op x = case op of
-                    Increment -> x + 1
-                    Decrement -> x - 1
+                apply Increment x = x + 1
+                apply Decrement x = x - 1
 
                 type Intent Counter = Counter
-                makeOp i _ = Just (pure i)
+                makeOp i _x = Just (pure i)
           </code></pre>
         </section>
 
@@ -477,20 +500,28 @@
 
             instance Ord a => CmRDT (TwoPSet a) where
                 type Payload (TwoPSet a) = Set a
-                apply op s = case op of
-                    Add    a  ->  insert a s
-                    Remove a  ->  delete a s
+                apply (Add    a) s = insert a s
+                apply (Remove a) s = delete a s
 
                 type Intent (TwoPSet a) = TwoPSet a
-                makeOp op s = case op of
-                    Remove a | a `notMember` s  ->  Nothing
-                    _                           ->  Just (pure op)
+                makeOp (Remove a) s
+                    | a `notMember` s = Nothing
+                makeOp _op         _s = Just (pure op)
+          </code></pre>
+          <p class="fragment">
+            Ошибка, если оп удаления придёт раньше добавления.
+          </p>
+        </section>
+
+        <section>
+          <h2>2P-Set (2-phase set)</h2>
+          <pre><code>
+            data TwoPSet a = Add a | Remove a
 
             instance Eq a => CausalOrd (TwoPSet a) where
-                Add a  `affects`  Remove b  =  a == b
-                _      `affects`  _         =  False
+                Add a  `precedes`  Remove b  =  a == b
+                _op1   `precedes`  _op2      =  False
           </code></pre>
-          <!-- TODO: не очевидно, что CmRDT (2PSet) -->
         </section>
 
         <section data-markdown>
@@ -515,11 +546,16 @@
           <h2>Property-based testing (QuickCheck)</h2>
 
           <pre><code>
-            associativity  =  \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
-            commutativity  =  \x y  ->  x &lt;> y == y &lt;> x
-            idempotency    =  \x  ->  x &lt;> x == x
+            associativity  =
+                \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
+            commutativity  =
+                \x y  ->  x &lt;> y == y &lt;> x
+            idempotency    =
+                \x  ->  x &lt;> x == x
           </code></pre>
+        </section>
 
+        <section>
           <pre><code class="haskell">
             cvrdtLaws @(Set Char)
             cvrdtLaws @(Max Char)
@@ -540,11 +576,11 @@
         <section>
           <pre><code>
             LWW commutativity: FAIL
-              *** Failed! Falsifiable (after 1 test):
-              x = LWW {value = 'A', time = LamportTime 0 (Pid 0)}
-              y = LWW {value = 'B', time = LamportTime 0 (Pid 0)}
-              LWW {value = 'A', time = LamportTime 0 (Pid 0)} /=
-                LWW {value = 'B', time = LamportTime 0 (Pid 0)}
+            *** Failed! Falsifiable (after 1 test):
+            x = LWW {value = 'A', time = LamportTime 0 0}
+            y = LWW {value = 'B', time = LamportTime 0 0}
+            LWW {value = 'A', time = LamportTime 0 0} /=
+              LWW {value = 'B', time = LamportTime 0 0}
           </code></pre>
           <pre><code>
             cvrdtLaws ::
@@ -555,7 +591,8 @@
 
         <section>
           <pre><code>
-            cmrdtLaw = property $ \(s :: Payload op) in1 in2 pid1 pid2 ->
+            cmrdtLaw = property $
+                \(s :: Payload op) in1 in2 pid1 pid2 ->
                 fromMaybe discard $ do
                     getOp1 &lt;- makeOp @op in1 s
                     getOp2 &lt;- makeOp @op in2 s
@@ -642,23 +679,32 @@
         </section>
 
         <section>
-          <h2>Полугруппа с доказательством</h2>
+          <h3>Полугруппа с доказательством</h3>
           <pre><code>
             class Semigroup a where
+
                 type (x :: a) &lt;> (y :: a) :: a
 
-                (%&lt;>) ::
-                    Sing (x :: a) -> Sing (y :: a) -> Sing (x &lt;> y)
+                (%&lt;>) :: Sing (x :: a) ->
+                         Sing (y :: a) ->
+                         Sing (x &lt;> y)
 
                 associativity ::
-                    Sing (x :: a) -> Sing (y :: a) -> Sing (z :: a) ->
+                    Sing (x :: a) ->
+                    Sing (y :: a) ->
+                    Sing (z :: a) ->
                     ((x &lt;> y) &lt;> z) :~: (x &lt;> (y &lt;> z))
+          </code></pre>
+        </section>
 
+        <section>
+          <pre><code>
             (&lt;>) :: (SingKind m, Semigroup m) =>
                     Demote m -> Demote m -> Demote m
-            x &lt;> y = withSomeSing x $ \sX ->
-                         withSomeSing y $ \sY ->
-                             fromSing (sX %&lt;> sY)
+            x &lt;> y =
+                withSomeSing x $ \sX ->
+                    withSomeSing y $ \sY ->
+                        fromSing (sX %&lt;> sY)
           </code></pre>
         </section>
 
@@ -666,12 +712,14 @@
           <h2>Список с доказательством</h2>
           <pre><code>
             instance Semigroup [a] where
+
                 type xs &lt;> ys = xs :++ ys
+
                 (%&lt;>) = (%:++)
 
                 associativity xs ys zs = case xs of
                     SNil -> Refl
-                    SCons _ xs' ->
+                    SCons _x xs' ->
                         case associativity xs' ys zs of
                             Refl -> Refl
           </code></pre>
@@ -681,8 +729,12 @@
           <h2><code>Max</code> с доказательством</h2>
           <pre><code>
             instance SOrd a => Semigroup (Max a) where
-                type 'Max x &lt;> 'Max y = 'Max (Singletons.Max x y)
+
+                type 'Max x &lt;> 'Max y =
+                    'Max (Singletons.Max x y)
+
                 SMax x %&lt;> SMax y = SMax (sMax x y)
+
                 associativity = undefined
           </code></pre>
         </section>
@@ -720,8 +772,8 @@
         <section data-markdown>
           ## Планы на будущее
 
-          1. Интегрировать с Antidote, Swarm
-          1. ~~Написать~~ Дописать приложение, использующее CRDT
+          1. Интегрировать с БД Antidote, Swarm
+          1. ~~Написать~~ Дописать приложение, использующее CRDT и БД
           1. Попробовать Coq
         </section>
 
@@ -790,4 +842,3 @@
 
 <!-- TODO: интонацией выделять переходы -->
 <!-- TODO: контакт с аудиторией -->
-<!-- TODO: код крупнее -->
