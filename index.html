@@ -287,6 +287,7 @@
 
         <section>
           <h2><code>LWW</code> (Last Write Wins)</h2>
+          (базовый тип в Cassandra)
           <pre><code>
             data LWW a = LWW
                 { value :: a
@@ -387,16 +388,17 @@
         <section>
           <h2>CmRDT в Haskell</h2>
           <pre><code>
-            class CausalOrd a where
-                affects :: a -> a -> Bool
-
             class CausalOrd op => CmRDT op where
                 type Payload op
                 apply :: op -> Payload op -> Payload op
 
                 type Intent op
                 makeOp :: Intent op -> Payload op -> Maybe (Process op)
+
+            class CausalOrd a where
+                affects :: a -> a -> Bool
           </code></pre>
+          (да, чуть сложнее, чем CvRDT)
         </section>
 
         <section>
@@ -738,7 +740,6 @@
 
 <!-- TODO: интонацией выделять переходы -->
 <!-- TODO: примеры из реальности: непрочитанные сообщения -- а потом нет -->
-<!-- TODO: LWW => Cassandra => Apple -->
 <!-- TODO: контакт с аудиторией -->
 <!-- TODO: слайд про МХЛ -->
 <!-- TODO: слайд с итогами CRDT -->
