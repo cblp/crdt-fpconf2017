@@ -137,18 +137,12 @@
           </table>
         </section>
 
-        <section>
-          <ol>
-            <li>
-              Модели CRDT
-              <ul>
-                <li>State-based (Convergent)</li>
-                <li>Op-based (Commutative)</li>
-              </ul>
-            </li>
-            <li>Реализация</li>
-            <li>Проблемы и решения</li>
-          </ol>
+        <section data-markdown>
+          1. Модели CRDT
+              - State-based (Convergent)
+              - Op-based (Commutative)
+          1. Реализация
+          1. Проблемы и решения
         </section>
 
         <section>
@@ -207,7 +201,7 @@
         <section data-markdown>
           # Полурешётка =
           # _Convergent_ RDT
-          ## (CvRDT, State-based)
+          ## (CvRDT, state-based)
         </section>
 
         <section>
@@ -381,7 +375,7 @@
 
         <section>
           <h2><em>Commutative</em> RDT</h2>
-          <h3>(CmRDT, Op-based)</h3>
+          <h3>(CmRDT, op-based)</h3>
           <img
             alt="CmRDT"
             class=element
@@ -460,7 +454,15 @@
           </code></pre>
         </section>
 
-        <!-- TODO: другие виды и развитие CRDT -->
+        <section data-markdown>
+          # CRDT
+
+          - Convergent (state-based)
+          - Commutative (op-based)
+          - Delta-state
+          - Swarm RON
+          - ...
+        </section>
 
         <section data-markdown>
           # Haskell <nobr>не проверяет</nobr> законы классов
@@ -666,13 +668,13 @@
         <section data-markdown>
           ## Планы на будущее
 
-          1. Интегрировать со Swarm
+          1. Интегрировать с Antidote, Swarm
           1. ~~Написать~~ Дописать приложение, использующее CRDT
           1. Попробовать Coq
         </section>
 
         <section>
-          <h1>Вопросы</h1>
+          <h1>Ваши вопросы</h1>
           <h2>Юрий Сыровецкий</h2>
           <h2>Николай Логинов</h2>
           <h2>
