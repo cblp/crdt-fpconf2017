@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="css/theme/black.css">
 
     <!-- Theme used for syntax highlighting of code -->
-    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <link href="plugin/prism/prism.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="lib/font/my/styles.css">
     <style>
@@ -259,14 +259,14 @@
           <h2>Полурешётка в Haskell</h2>
 
           <i class="icon-package"></i> <code>base</code>
-          <pre><code>
+          <pre><code class="language-haskell">
           -- associativity: (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
           class Semigroup a where
               (&lt;>) :: a -> a -> a
           </code></pre>
 
           <i class="icon-package"></i> <code>crdt</code>
-          <pre><code>
+          <pre><code class="language-haskell">
           -- commutativity: x &lt;> y == y &lt;> x
           -- idempotency: x &lt;> x == x
           class Semigroup a => Semilattice a
@@ -279,13 +279,13 @@
           <h2><code>Set</code> — полурешётка</h2>
 
           <i class="icon-package"></i> <code>base</code>
-          <pre><code>
+          <pre><code class="language-haskell">
           instance Ord a => Semigroup (Set a) where
               (&lt;>) = union
           </code></pre>
 
           <i class="icon-package"></i> <code>crdt</code>
-          <pre><code>
+          <pre><code class="language-haskell">
           instance Ord a => Semilattice (Set a)
 
           -- автоматически
@@ -297,7 +297,7 @@
           <h2><code>Max</code> — полурешётка</h2>
 
           <i class="icon-package"></i> <code>base</code>
-          <pre><code>
+          <pre><code class="language-haskell">
           newtype Max a = Max a
 
           instance Ord a => Semigroup (Max a) where
@@ -305,7 +305,7 @@
           </code></pre>
 
           <i class="icon-package"></i> <code>crdt</code>
-          <pre><code>
+          <pre><code class="language-haskell">
           instance Ord a => Semilattice (Max a)
 
           -- автоматически
@@ -318,18 +318,17 @@
         <section>
           <h2><code>LWW</code> (Last Write Wins)</h2>
           (базовый тип в Cassandra)
-          <pre><code>
-            data LWW a = LWW { value :: a
-                             , time  :: Timestamp }
+          <pre><code class="language-haskell">
+          data LWW a = LWW { value :: a
+                           , time  :: Timestamp }
 
-            instance Semigroup (LWW a) where
-                x &lt;> y = if time x > time y
-                             then x
-                             else y
+          instance Semigroup (LWW a) where
+              x &lt;> y = if time x > time y
+                           then x
+                           else y
 
-            instance Semilattice (LWW a)
-
-            -- instance CvRDT (LWW a) -- автоматически
+          instance Semilattice (LWW a)
+          -- instance CvRDT (LWW a) -- автоматически
           </code></pre>
         </section>
 
@@ -369,10 +368,10 @@
           </p>
         </section>
 
-        <section data-markdown>
-          ## Grow-only counter
+        <section>
+          <h2>Grow-only counter</h2>
 
-          ```
+          <pre><code class="language-haskell">
           newtype GCounter = G (Map ReplicaId Natural)
 
           increment :: ReplicaId -> GCounter -> GCounter
@@ -381,13 +380,13 @@
 
           query :: GCounter -> Natural
           query (G m) = sum m
-          ```
+          </code></pre>
         </section>
 
-        <section data-markdown>
-          ## Grow-only counter
+        <section>
+          <h2>Grow-only counter</h2>
 
-          ```
+          <pre><code class="language-haskell">
           newtype GCounter = G (Map ReplicaId Natural)
 
           instance Semigroup GCounter where
@@ -396,7 +395,7 @@
           instance Semilattice GCounter
 
           -- instance CvRDT GCounter -- автоматически
-          ```
+          </code></pre>
         </section>
 
         <section>
@@ -446,68 +445,68 @@
 
         <section>
           <h2>CmRDT в Haskell</h2>
-          <pre><code>
-            class CausalOrd op => CmRDT op where
-                type Payload op
-                apply :: op -> Payload op -> Payload op
+          <pre><code class="language-haskell">
+          class CausalOrd op => CmRDT op where
+              type Payload op
+              apply :: op -> Payload op -> Payload op
 
-                type Intent op
-                makeOp :: Intent op ->
-                          Payload op ->
-                          Maybe (Process op)
+              type Intent op
+              makeOp :: Intent op ->
+                        Payload op ->
+                        Maybe (Process op)
 
-            class CausalOrd a where
-                precedes :: a -> a -> Bool
+          class CausalOrd a where
+              precedes :: a -> a -> Bool
           </code></pre>
           (да, чуть сложнее, чем CvRDT)
         </section>
 
         <section>
           <h2><code>LWW</code> (Last Write Wins)</h2>
-          <pre><code>
-            data LWW a = LWW
-                { value :: a
-                , time  :: Timestamp }
+          <pre><code class="language-haskell">
+          data LWW a = LWW
+              { value :: a
+              , time  :: Timestamp }
 
-            instance Eq a => CmRDT (LWW a) where
-                type Payload (LWW a) = LWW a
-                apply = (&lt;>)
+          instance Eq a => CmRDT (LWW a) where
+              type Payload (LWW a) = LWW a
+              apply = (&lt;>)
 
-                type Intent (LWW a) = a
-                makeOp value state =
-                    Just (assign value state)
+              type Intent (LWW a) = a
+              makeOp value state =
+                  Just (assign value state)
           </code></pre>
         </section>
 
         <section>
           <h2>Counter</h2>
-          <pre><code>
-            data Counter = Increment | Decrement
+          <pre><code class="language-haskell">
+          data Counter = Increment | Decrement
 
-            instance CmRDT Counter where
-                type Payload Counter = Integer
-                apply Increment x = x + 1
-                apply Decrement x = x - 1
+          instance CmRDT Counter where
+              type Payload Counter = Integer
+              apply Increment x = x + 1
+              apply Decrement x = x - 1
 
-                type Intent Counter = Counter
-                makeOp i _x = Just (pure i)
+              type Intent Counter = Counter
+              makeOp i _x = Just (pure i)
           </code></pre>
         </section>
 
         <section>
           <h2>2P-Set (2-phase set)</h2>
-          <pre><code>
-            data TwoPSet a = Add a | Remove a
+          <pre><code class="language-haskell">
+          data TwoPSet a = Add a | Remove a
 
-            instance Ord a => CmRDT (TwoPSet a) where
-                type Payload (TwoPSet a) = Set a
-                apply (Add    a) s = insert a s
-                apply (Remove a) s = delete a s
+          instance Ord a => CmRDT (TwoPSet a) where
+              type Payload (TwoPSet a) = Set a
+              apply (Add    a) s = insert a s
+              apply (Remove a) s = delete a s
 
-                type Intent (TwoPSet a) = TwoPSet a
-                makeOp (Remove a) s
-                    | a `notMember` s = Nothing
-                makeOp _op         _s = Just (pure op)
+              type Intent (TwoPSet a) = TwoPSet a
+              makeOp (Remove a) s
+                  | a `notMember` s = Nothing
+              makeOp _op         _s = Just (pure op)
           </code></pre>
           <p class="fragment">
             Ошибка, если оп удаления придёт раньше добавления.
@@ -516,12 +515,12 @@
 
         <section>
           <h2>2P-Set (2-phase set)</h2>
-          <pre><code>
-            data TwoPSet a = Add a | Remove a
+          <pre><code class="language-haskell">
+          data TwoPSet a = Add a | Remove a
 
-            instance Eq a => CausalOrd (TwoPSet a) where
-                Add a  `precedes`  Remove b  =  a == b
-                _op1   `precedes`  _op2      =  False
+          instance Eq a => CausalOrd (TwoPSet a) where
+              Add a  `precedes`  Remove b  =  a == b
+              _op1   `precedes`  _op2      =  False
           </code></pre>
         </section>
 
@@ -546,64 +545,64 @@
         <section>
           <h2>Property-based testing (QuickCheck)</h2>
 
-          <pre><code>
-            associativity  =
-                \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
-            commutativity  =
-                \x y  ->  x &lt;> y == y &lt;> x
-            idempotency    =
-                \x  ->  x &lt;> x == x
+          <pre><code class="language-haskell">
+          associativity  =
+              \x y z  ->  (x &lt;> y) &lt;> z == x &lt;> (y &lt;> z)
+          commutativity  =
+              \x y  ->  x &lt;> y == y &lt;> x
+          idempotency    =
+              \x  ->  x &lt;> x == x
           </code></pre>
         </section>
 
         <section>
-          <pre><code class="haskell">
-            cvrdtLaws @(Set Char)
-            cvrdtLaws @(Max Char)
-            cvrdtLaws @GCounter
-            ...
+          <pre><code class="language-haskell">
+          cvrdtLaws @(Set Char)
+          cvrdtLaws @(Max Char)
+          cvrdtLaws @GCounter
+          ...
           </code></pre>
 
-          <pre><code>
-            associativity:
-              +++ OK, passed 100 tests.
-            commutativity:
-              +++ OK, passed 100 tests.
-            idempotency:
-              +++ OK, passed 100 tests.
+          <pre><code class="language-haskell">
+          associativity:
+            +++ OK, passed 100 tests.
+          commutativity:
+            +++ OK, passed 100 tests.
+          idempotency:
+            +++ OK, passed 100 tests.
           </code></pre>
         </section>
 
         <section>
-          <pre><code>
-            LWW commutativity: FAIL
-            *** Failed! Falsifiable (after 1 test):
-            x = LWW {value = 'A', time = LamportTime 0 0}
-            y = LWW {value = 'B', time = LamportTime 0 0}
-            LWW {value = 'A', time = LamportTime 0 0} /=
-              LWW {value = 'B', time = LamportTime 0 0}
+          <pre><code class="language-haskell">
+          LWW commutativity: FAIL
+          *** Failed! Falsifiable (after 1 test):
+          x = LWW {value = 'A', time = LamportTime 0 0}
+          y = LWW {value = 'B', time = LamportTime 0 0}
+          LWW {value = 'A', time = LamportTime 0 0} /=
+          LWW {value = 'B', time = LamportTime 0 0}
           </code></pre>
-          <pre><code>
-            cvrdtLaws ::
-                (Arbitrary a, CvRDT a, Eq a, Show a) =>
-                Maybe (StateT s Gen a, s) -> [TestTree]
+          <pre><code class="language-haskell">
+          cvrdtLaws ::
+              (Arbitrary a, CvRDT a, Eq a, Show a) =>
+              Maybe (StateT s Gen a, s) -> [TestTree]
           </code></pre>
         </section>
 
         <section>
-          <pre><code>
-            cmrdtLaw = property $
-                \(s :: Payload op) in1 in2 pid1 pid2 ->
-                fromMaybe discard $ do
-                    getOp1 &lt;- makeOp @op in1 s
-                    getOp2 &lt;- makeOp @op in2 s
-                    let (op1, op2) = runLamportClock $
-                            (,) &lt;$> runProcess pid1 getOp1
-                                &lt;*> runProcess pid2 getOp2
-                    pure $
-                        concurrent op1 op2 ==>
-                        (apply op1 . apply op2) s ===
-                        (apply op2 . apply op1) s
+          <pre><code class="language-haskell">
+          concurrentOpsCommute
+                  s1 s2 s3 in1 in2 pid1 pid2 pid3 =
+              let genOp s intent = do
+                      state &lt;- initialize s
+                      makeOp intent state `orElse` discard
+                  (op1, op2, st3) = runLamportClock $ (,,)
+                      &lt;$> runProcess pid1 (genOp s1 in1)
+                      &lt;*> runProcess pid2 (genOp s2 in2)
+                      &lt;*> runProcess pid3 (initialize s3)
+              in  concurrent op1 op2 ==>
+                      (apply op1 . apply op2) st3 ===
+                      (apply op2 . apply op1) st3
           </code></pre>
         </section>
 
@@ -663,90 +662,89 @@
 
         <section>
           <h2>Ah, type-level Haskell...</h2>
-          <pre><code>
-            {-# LANGUAGE DataKinds #-}
-            {-# LANGUAGE FlexibleInstances #-}
-            {-# LANGUAGE GADTs #-}
-            {-# LANGUAGE OverloadedStrings #-}
-            {-# LANGUAGE PolyKinds #-}
-            {-# LANGUAGE QuasiQuotes #-}
-            {-# LANGUAGE RankNTypes #-}
-            {-# LANGUAGE ScopedTypeVariables #-}
-            {-# LANGUAGE TemplateHaskell #-}
-            {-# LANGUAGE TypeFamilies #-}
-            {-# LANGUAGE TypeOperators #-}
-            {-# LANGUAGE UndecidableInstances #-}
+          <pre><code class="language-haskell">
+          {-# LANGUAGE DataKinds #-}
+          {-# LANGUAGE FlexibleInstances #-}
+          {-# LANGUAGE GADTs #-}
+          {-# LANGUAGE OverloadedStrings #-}
+          {-# LANGUAGE PolyKinds #-}
+          {-# LANGUAGE QuasiQuotes #-}
+          {-# LANGUAGE RankNTypes #-}
+          {-# LANGUAGE ScopedTypeVariables #-}
+          {-# LANGUAGE TemplateHaskell #-}
+          {-# LANGUAGE TypeFamilies #-}
+          {-# LANGUAGE TypeOperators #-}
+          {-# LANGUAGE UndecidableInstances #-}
           </code></pre>
         </section>
 
         <section>
           <h3>Полугруппа с доказательством</h3>
-          <pre><code>
-            class Semigroup a where
+          <pre><code class="language-haskell">
+          class Semigroup a where
 
-                type (x :: a) &lt;> (y :: a) :: a
+              type (x :: a) &lt;> (y :: a) :: a
 
-                (%&lt;>) :: Sing (x :: a) ->
-                         Sing (y :: a) ->
-                         Sing (x &lt;> y)
+              (%&lt;>) :: Sing (x :: a) -> Sing (y :: a) ->
+                       Sing (x &lt;> y)
 
-                associativity ::
-                    Sing (x :: a) ->
-                    Sing (y :: a) ->
-                    Sing (z :: a) ->
-                    ((x &lt;> y) &lt;> z) :~: (x &lt;> (y &lt;> z))
+              associativity ::
+                  Sing (x :: a) ->
+                  Sing (y :: a) ->
+                  Sing (z :: a) ->
+                  ((x &lt;> y) &lt;> z) :~: (x &lt;> (y &lt;> z))
           </code></pre>
         </section>
 
         <section>
-          <pre><code>
-            (&lt;>) :: (SingKind m, Semigroup m) =>
-                    Demote m -> Demote m -> Demote m
-            x &lt;> y =
-                withSomeSing x $ \sX ->
-                    withSomeSing y $ \sY ->
-                        fromSing (sX %&lt;> sY)
+          <pre><code class="language-haskell">
+          (&lt;>) :: (SingKind m, Semigroup m) =>
+                  Demote m -> Demote m -> Demote m
+          x &lt;> y =
+              withSomeSing x $ \sX ->
+                  withSomeSing y $ \sY ->
+                      fromSing (sX %&lt;> sY)
           </code></pre>
         </section>
 
         <section>
           <h2>Список с доказательством</h2>
-          <pre><code>
-            instance Semigroup [a] where
+          <pre><code class="language-haskell">
+          instance Semigroup [a] where
 
-                type xs &lt;> ys = xs :++ ys
+              type xs &lt;> ys = xs :++ ys
 
-                (%&lt;>) = (%:++)
+              (%&lt;>) = (%:++)
 
-                associativity xs ys zs = case xs of
-                    SNil -> Refl
-                    SCons _x xs' ->
-                        case associativity xs' ys zs of
-                            Refl -> Refl
+              associativity xs ys zs = case xs of
+                  SNil -> Refl
+                  SCons _x xs' ->
+                      case associativity xs' ys zs of
+                          Refl -> Refl
           </code></pre>
         </section>
 
         <section>
           <h2><code>Max</code> с доказательством</h2>
-          <pre><code>
-            instance SOrd a => Semigroup (Max a) where
+          <pre><code class="language-haskell">
+          instance SOrd a => Semigroup (Max a) where
 
-                type 'Max x &lt;> 'Max y =
-                    'Max (Singletons.Max x y)
+              type 'Max x &lt;> 'Max y =
+                  'Max (Singletons.Max x y)
 
-                SMax x %&lt;> SMax y = SMax (sMax x y)
+              SMax x %&lt;> SMax y = SMax (sMax x y)
 
-                associativity = undefined
+              associativity = undefined
           </code></pre>
         </section>
 
         <section>
           <h2>В действии</h2>
-          <pre><code class="haskell">
+          <pre><code class="language-haskell">
             λ> print ([1, 2] &lt;> [3] :: [Integer])
             [1,2,3]
           </code></pre>
-          <pre class="fragment"><code class="haskell">
+          <pre class="fragment"><code class="language-haskell">
             λ> print ([1, 2] &lt;> [3] :: [Int])
             error:
                 • Couldn't match type ‘Demote a’ with ‘Int’
@@ -754,7 +752,7 @@
                     Actual type: Demote [a]
                   The type variable ‘a’ is ambiguous
           </code></pre>
-          <pre class="fragment"><code class="haskell">
+          <pre class="fragment"><code class="language-haskell">
             λ> print ([1, 2] &lt;> [-3] :: [Integer])
             *** Exception: Negative singleton nat
           </code></pre>
@@ -820,14 +818,6 @@
       // - https://github.com/hakimel/reveal.js#dependencies
       Reveal.initialize({
         dependencies: [
-          {
-            src: 'plugin/highlight/highlight.js',
-            async: true,
-            callback: function() {
-              hljs.configure({languages: ['haskell']});
-              hljs.initHighlightingOnLoad();
-            }
-          },
           { src: 'plugin/markdown/marked.js' },
           { src: 'plugin/markdown/markdown.js' },
           { src: 'plugin/math/math.js' },
@@ -838,6 +828,7 @@
         transition: 'fade',
       });
     </script>
+    <script src="plugin/prism/prism.js"></script>
   </body>
 </html>
 
