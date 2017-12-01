@@ -74,11 +74,17 @@
           ## (школа 1303)
         </section>
 
-        <section data-background-image="intro-conflict-1.jpg">
+        <section data-markdown>
+          # 10 новых уведомлений!
         </section>
 
-        <!-- <section data-background-image="intro-conflict-2.png">
-        </section> -->
+        <section data-background-image="intro-conflict-1.jpg">
+          <h1 style="text-shadow: 0 0 0.2em black;">0 новых уведомлений :(</h1>
+        </section>
+
+        <section data-background-image="intro-conflict-2.png">
+          <h1 style="text-shadow: 0 0 0.2em black;"><br><br>10 уведомлений<br>10 уведомлений</h1>
+        </section>
 
         <section>
           <h2>Данные<br>&nbsp;</h2>
@@ -591,18 +597,19 @@
 
         <section>
           <pre><code class="language-haskell">
-          concurrentOpsCommute
-                  s1 s2 s3 in1 in2 pid1 pid2 pid3 =
-              let genOp s intent = do
-                      state &lt;- initialize s
-                      makeOp intent state `orElse` discard
-                  (op1, op2, st3) = runLamportClock $ (,,)
+          concurrentOpsCommute ... =
+              concurrent op1 op2 ==>
+                  (apply op1 . apply op2) st3 ===
+                  (apply op2 . apply op1) st3
+            where
+              (op1, op2, st3) =
+                  runLamportClock $ (,,)
                       &lt;$> runProcess pid1 (genOp s1 in1)
                       &lt;*> runProcess pid2 (genOp s2 in2)
                       &lt;*> runProcess pid3 (initialize s3)
-              in  concurrent op1 op2 ==>
-                      (apply op1 . apply op2) st3 ===
-                      (apply op2 . apply op1) st3
+              genOp s intent = do
+                  state &lt;- initialize s
+                  makeOp intent state `orElse` discard
           </code></pre>
         </section>
 
