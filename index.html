@@ -13,6 +13,10 @@
 
     <!-- Theme used for syntax highlighting of code -->
     <link href="plugin/prism/prism.css" rel="stylesheet" />
+    <style>
+      mark {background-color: #aaa;}
+      mark .token {color: black !important;}
+    </style>
 
     <link rel="stylesheet" href="lib/font/my/styles.css">
     <style>
@@ -67,11 +71,13 @@
           <h1>CRDT <code>&lt;></code> Haskell</h1>
           <h2>Юрий Сыровецкий</h2>
           <h2>Николай Логинов</h2>
-        </section>
-
-        <section data-markdown>
-          ## Московский Химический Лицей
-          ## (школа 1303)
+          <p>&nbsp;</p>
+          <p>Московский Химический Лицей, 2017</p>
+          <p>
+            <a href="https://cblp.github.io/crdt-fpconf2017/#/24">
+              cblp.github.io/crdt-fpconf2017
+            </a>
+          </p>
         </section>
 
         <section data-markdown>
@@ -339,6 +345,22 @@
           instance Semilattice (LWW a)
           -- instance CvRDT (LWW a) -- автоматически
           </code></pre>
+        </section>
+
+        <section>
+          <h2>LWW-Element Set</h2>
+          <pre><code class="language-haskell">
+          newtype LwwElementSet a = LES (Map a (<mark>LWW Bool</mark>))
+              deriving (Eq, Show)
+
+          instance Ord a =>
+                  Semigroup (LwwElementSet a) where
+              LES m1 &lt;> LES m2 =
+                  LES (unionWith <mark>(&lt;>)</mark> m1 m2)
+
+          instance Ord a => Semilattice (LwwElementSet a)
+          </code></pre>
+          <p class="fragment">Композиция CRDT</p>
         </section>
 
         <section>
