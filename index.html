@@ -241,8 +241,8 @@
         </section>
 
         <section data-markdown>
-          # Полурешётка =
-          # _Convergent_ RDT
+          # _Convergent_ RDT =
+          # Полурешётка
           ## (CvRDT, state-based)
         </section>
 
@@ -310,30 +310,8 @@
         </section>
 
         <section>
-          <h2><code>Max</code> — полурешётка</h2>
-
-          <i class="icon-package"></i> <code>base</code>
-          <pre><code class="language-haskell">
-          newtype Max a = Max a
-
-          instance Ord a => Semigroup (Max a) where
-              Max x &lt;> Max y = Max (max x y)
-          </code></pre>
-
-          <i class="icon-package"></i> <code>crdt</code>
-          <pre><code class="language-haskell">
-          instance Ord a => Semilattice (Max a)
-
-          -- автоматически
-          -- instance Ord a => CvRDT (Max a)
-          </code></pre>
-        </section>
-
-        <!-- TODO: пример для максимума -- счётчик? -->
-
-        <section>
           <h2><code>LWW</code> (Last Write Wins)</h2>
-          (базовый тип в Cassandra)
+          (базовый тип в Cassandra и много где)
           <pre><code class="language-haskell">
           data LWW a = LWW { value :: a
                            , time  :: Timestamp }
@@ -345,6 +323,22 @@
 
           instance Semilattice (LWW a)
           -- instance CvRDT (LWW a) -- автоматически
+          </code></pre>
+        </section>
+
+        <section>
+          <pre><code class="language-haskell">
+            data User = User
+                { ...
+                , name     :: LWW Text
+                , birthday :: LWW Date
+                , ...
+                }
+          </code></pre>
+          <pre><code class="language-haskell">
+            User{name = LWW "Jon" 10}
+            &lt;> User{name = LWW "John" 42}
+            =  User{name = LWW "John" 42}
           </code></pre>
         </section>
 
@@ -590,7 +584,7 @@
         <section>
           <pre><code class="language-haskell">
           cvrdtLaws @(Set Char)
-          cvrdtLaws @(Max Char)
+          cvrdtLaws @(LWW Char)
           cvrdtLaws @GCounter
           ...
           </code></pre>
